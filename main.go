@@ -153,12 +153,15 @@ func WriteExperienceEntry(exp SectionEntery, cv_builder *strings.Builder, header
 	cv_builder.WriteString("\n")
 
 	// process bulletpoints
-	cv_builder.WriteString(resumeItemListStart + "\n")
+	if len(exp.Bulletpoints) != 0 {
+		cv_builder.WriteString(resumeItemListStart + "\n")
 
-	for _, item := range exp.Bulletpoints {
-		cv_builder.WriteString(fmt.Sprintf("	%s{%s}\n", resumeItem, item))
+		for _, item := range exp.Bulletpoints {
+			cv_builder.WriteString(fmt.Sprintf("	%s{%s}\n", resumeItem, item))
+		}
+		cv_builder.WriteString(resumeItemListEnd + "\n\n")
 	}
-	cv_builder.WriteString(resumeItemListEnd + "\n\n")
+
 }
 
 func WriteProjectEntry(project SectionEntery, cv_builder *strings.Builder, header_format []string) {
@@ -175,11 +178,13 @@ func WriteProjectEntry(project SectionEntery, cv_builder *strings.Builder, heade
 	}
 
 	cv_builder.WriteString(resumeItemListStart + "\n")
-
-	for _, item := range project.Bulletpoints {
-		cv_builder.WriteString(fmt.Sprintf("	%s{%s}\n", resumeItem, item))
+	if len(project.Bulletpoints) != 0 {
+		for _, item := range project.Bulletpoints {
+			cv_builder.WriteString(fmt.Sprintf("	%s{%s}\n", resumeItem, item))
+		}
+		cv_builder.WriteString(resumeItemListEnd + "\n\n")
 	}
-	cv_builder.WriteString(resumeItemListEnd + "\n\n")
+
 }
 
 func WriteHeader(cv_args *CV, cv_builder *strings.Builder) { //TODO: decide how I want to do this, want to be able to align to any direction in toml
