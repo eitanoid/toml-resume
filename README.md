@@ -6,6 +6,7 @@ The resume template is taken from [This Repo](https://github.com/jakegut/resume/
 
 Cofigure the `.toml` file as desired, then run the parser, resulting in a `.tex` file.
 To compile the `.tex` file, ensure LaTeX is installed, the chosen font is installed as part of your system and compile using `XeLaTeX` or `LuaLaTeX`.
+Example command to render: `latexmk -xelatex cv.tex`
 
 ![example](https://github.com/eitanoid/toml-resume/blob/main/examples/examplecv.png)
 
