@@ -7,6 +7,10 @@ import (
 	"strings"
 )
 
+//TODO:
+//output to a file
+// change font settings in toml
+
 var ( //TODO: redo the template Im using, keep these for now because they are convenient
 	section                   = "\\section"
 	subheading                = "\\resumeSubheading"

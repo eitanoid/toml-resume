@@ -1,3 +1,10 @@
+# CV is configerd using this TOML file. Things to know about TOML files:
+# '#' is used as a comment character, any commented text will be processed as part of the config.
+# Text must be surrounded by quotation marks to be processed (as a string).
+# Arrays are declared using square brackets, and entries must be seperated by commas ','
+# tables are declared using [name] (for eg. [config]). this is a single table that is declared once.
+# nested tables are ones declared by [[name]], where each [[name]] entry is a sub-table in table. 
+
 [config]
 font_size=10 # 10, 11, 12 as per latex's document class sizes
 font_scale=1 # multiplicative font spcale
@@ -15,65 +22,68 @@ project_header_order=["title, dates"]
 #section titles. Must contain one per non header entry in cv_order.
 section_titles=["Skills","Education","Experience","Projects, big"]
 
-
-
 [header]
 header_format=["email", "linkedin","github", "phone"]
-name="Evil Eitan"
-name_size=14
-location="York, UK"
-phone="+44 1234 56789"
-email="evileitan@email.com"
-linkedin="linkedin.com/evil-eitan"
-github="github.com/eitan"
+name="Your Full Name"
+name_size=14 #font size in pt.
+location="Location, Earth"
+phone="+123 1234 56789"
+email="your-email@email.com"
+linkedin="linkedin.com/your-linkedin"
+github="github.com/your-github"
 
 # skills are stored as key-value pairs, the key will be rendered as bold text, the value is the description.
 [skills]
-languages = "Fluent in English, Hebrew, basic Russian."
-programming = "Experience in Go, Python, Lua, Bash, Maple and LaTeX."
+skill1 = "this is a great skill that I have."
+skill2 = "so many skills."
+LaTeX = "markup language."
 
 
 
 [[education]]
-title="Masters of Mathematics (with a placement year)"
-institution="University of York"
-location="York, UK"
+title="Degree Title"
+institution="University Name"
+location="Location, Place"
 dates="Sep 2022 - Jun 2027"
 bulletpoints=[
-			"Relevent conent: Mathematics for Evil, Introduction to Deathrays and Mayham, Modeling Evil in Discrete Time, Statistics for Evil, Evil Group Theory",]
+	"Accomplishment 1",
+	"Accomplishment 2",]
 
 [[experience]]
-title="Menace"
-institution="Evil Lab"
-location="Evil, UK"
+title="Position 1"
+institution="Company 1"
+location="Place, Location"
 dates="Nov 2023 - Present"
 bulletpoints=[
-			"Create chaos.",
-			"Raise fire alarm regularly, causing regular dissorder.",
-			"Responsible for 90 wildfires, causing large public disruptions.",
+			"Accomplishment 1.",
+			"Accomplishment 2.",
+			"Accomplishment 3.",
 			]
 
 [[experience]]
-title="Evil Technician"
-institution="Evil Lab"
-location="Evil, UK"
+title="Position 2"
+institution="Company 2"
+location="Place, Locaiton"
 dates="Nov 2023 - Present"
 bulletpoints=[
-			"Mantained death-ray, ensuring peak performance.",
-			"Responsible for sourcing and procurement of evil materials.",
-			"Recieved certifications in 'Evil' levels 1 - 8.",
+			"Accomplishment 1 at 2nd company.",
+			"Accomplishment 2 at 2nd company.",
+			"Accomplishment 3 at 2nd company.",
 			]
 
 
 [[project]]
-title="TOML CV parser"
+title="This Project"
+description = "Has a short description."
 dates="Present"
-bulletpoints=["CV parser"]
+bulletpoints=[
+	"Very cool project.",
+	"Completely very well."	
+	]
 
 [[project]]
-title="Evil Job"
-description="evil ray"
+title="Another Project"
 dates="Present"
-bulletpoints=["did evil", "death ray in town square"]
-
-
+bulletpoints=[
+	"This project has no short description.",
+]
