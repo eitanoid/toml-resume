@@ -41,7 +41,8 @@ func ReadTOML(path string) CV {
 }
 
 func main() {
-	cv_args := ReadTOML("test.toml")
+	input, output := ParseInput()
+	cv_args := ReadTOML(input)
 	cv_builder := strings.Builder{}
 
 	cv_builder.WriteString("\\input{preamble.tex}\n")
@@ -53,7 +54,20 @@ func main() {
 	}
 
 	cv_builder.WriteString("\\end{document}")
-	fmt.Println(cv_builder.String())
+
+	if output == "" {
+		fmt.Println(cv_builder.String())
+	} else {
+		f, err := os.Create(output)
+		if err != nil {
+			panic(err)
+		}
+		defer f.Close()
+		_, err = f.WriteString(cv_builder.String())
+		if err != nil {
+			panic(err)
+		}
+	}
 }
 
 func ValidateConfig(cv_args *CV) {
