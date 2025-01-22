@@ -1,0 +1,79 @@
+[config]
+font_size=10 # 10, 11, 12 as per latex's document class sizes
+font_scale=1 # multiplicative font spcale
+page_margin=1.5
+font="Calibri"
+
+# order of the cv by each of the sections in this document, header is first.
+cv_order=["header","skills","education","experience","projects"] 
+
+# format of entry headers
+education_header_order=["institution", "dates", "title", "location"]
+experience_header_order=["institution","dates","title","location"]
+project_header_order=["title, dates"]
+
+#section titles. Must contain one per non header entry in cv_order.
+section_titles=["Skills","Education","Experience","Projects, big"]
+
+
+
+[header]
+header_format=["email", "linkedin","github", "phone"]
+name="Evil Eitan"
+name_size=14
+location="York, UK"
+phone="+44 1234 56789"
+email="evileitan@email.com"
+linkedin="linkedin.com/evil-eitan"
+github="github.com/eitan"
+
+# skills are stored as key-value pairs, the key will be rendered as bold text, the value is the description.
+[skills]
+languages = "Fluent in English, Hebrew, basic Russian."
+programming = "Experience in Go, Python, Lua, Bash, Maple and LaTeX."
+
+
+
+[[education]]
+title="Masters of Mathematics (with a placement year)"
+institution="University of York"
+location="York, UK"
+dates="Sep 2022 - Jun 2027"
+bulletpoints=[
+			"Relevent conent: Mathematics for Evil, Introduction to Deathrays and Mayham, Modeling Evil in Discrete Time, Statistics for Evil, Evil Group Theory",]
+
+[[experience]]
+title="Menace"
+institution="Evil Lab"
+location="Evil, UK"
+dates="Nov 2023 - Present"
+bulletpoints=[
+			"Create chaos.",
+			"Raise fire alarm regularly, causing regular dissorder.",
+			"Responsible for 90 wildfires, causing large public disruptions.",
+			]
+
+[[experience]]
+title="Evil Technician"
+institution="Evil Lab"
+location="Evil, UK"
+dates="Nov 2023 - Present"
+bulletpoints=[
+			"Mantained death-ray, ensuring peak performance.",
+			"Responsible for sourcing and procurement of evil materials.",
+			"Recieved certifications in 'Evil' levels 1 - 8.",
+			]
+
+
+[[project]]
+title="TOML CV parser"
+dates="Present"
+bulletpoints=["CV parser"]
+
+[[project]]
+title="Evil Job"
+description="evil ray"
+dates="Present"
+bulletpoints=["did evil", "death ray in town square"]
+
+

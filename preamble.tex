@@ -1,0 +1,128 @@
+%! TeX program = xelatex
+%! TEX TS-program = xelatex
+\documentclass[11pt, a4paper]{article}
+\usepackage[margin=1.5cm]{geometry}
+
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{tabularx}
+
+% Type Faces------------------------------
+\usepackage{anyfontsize}
+\usepackage{t1enc, fontspec}
+
+%as a system font
+\setmainfont[
+	Scale=1,
+]{Calibri}
+% ----------------------------------------
+
+
+\raggedbottom
+\raggedright
+\pagenumbering{gobble}                                        % turn off page numbers
+\sloppy                                                       % no word splitting when reaching end of line
+\setlength{\tabcolsep}{0pt}
+
+\titleformat{\section}                                        % Command to format section titles
+{\large}                                                      % Style for the section title (e.g., font size, bold, italic)
+{}                                                            % Label format (e.g., section number with a dot)
+{0pt}                                                         % Horizontal separation between label and title
+{}                                                            % Prefix text before the title
+[\hrule]                                                      % Optional code after the title (e.g., horizontal rule)
+
+
+\titlespacing*{\section}
+{0pt}                                                         % Left margin
+{-2pt}                                                        % Space above the section title
+{5pt}                                                         % Space below the section title
+
+% resume structure:
+%
+% \profile
+% 
+% \section{Work Experience}
+% \BeginResumeItems
+% --\ExperienceHeading{}{}{}{}
+% -- -- \BeginExperiencePoints	
+% -- -- -- \ExperienceItem{#1}
+% -- -- -- \ExperienceItem{#2}
+% -- -- \EndExperiencePoints
+%
+% --\ExperienceHeading{}{}{}{}
+% -- -- \BeginExperiencePoints	
+% -- -- -- \ExperienceItem{#1}
+% -- -- -- \ExperienceItem{#2}
+% -- -- \EndExperiencePoints	
+%
+% --\EndResumeItems
+%
+% \section{Education}
+% \BeginResumeItems
+% --\EducationHeading{}{}{}{}
+% -- -- \BeginExperiencePoints	
+% -- -- -- \ExperienceItem{#1}
+% -- -- -- \ExperienceItem{#2}
+% -- -- \EndExperiencePoints
+% --\EndResumeItems
+%
+%
+% \section{Projects}
+% \BeginResumeItems
+% --\EducationHeading{}{}{}{}
+% -- -- \BeginExperiencePoints	
+% -- -- -- \ExperienceItem{#1}
+% -- -- -- \ExperienceItem{#2}
+% -- -- \EndExperiencePoints
+% --\EndResumeItems
+%
+% \resumeProjectHeading{bold title}{emphasised addition}{dates}
+% -- \resumeItemListStart
+% -- -- \ExperienceItem{#1}
+% -- \resumeItemListEnd
+
+
+
+% Custom commands
+
+\newcommand{\resumeItem}[1]{
+	\item\small{
+		{#1 \vspace{-2pt}}
+	}
+}
+
+\newcommand{\resumeSubheading}[4]{
+	\vspace{-2pt}\item
+	\begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+		\textbf{#1} & #2 \\
+		\textit{\small#3} & \textit{\small #4} \\
+	\end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubSubheading}[2]{
+	\item
+	\begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+		\textit{\small#1} & \textit{\small #2} \\
+	\end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeProjectHeading}[2]{
+	\item
+	\begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+		\small#1 & #2 \\
+	\end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubItem}[1]{\resumeItem{#1}\vspace{-4pt}}
+
+\renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
+		\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+		\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+
+
+\newcommand{\ExperienceHeading}{}
