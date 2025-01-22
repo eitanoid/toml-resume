@@ -11,6 +11,13 @@ type Experience struct {
 	Bulletpoints                        []string
 }
 
+type SectionEntery struct {
+	Header_style                                     string
+	Dates, Description, Location, Title, Institution string
+	Bulletpoints                                     []string
+	Points                                           map[string]string
+}
+
 type Education struct {
 	Dates, Location, Title, Institution string
 	Bulletpoints                        []string
@@ -25,11 +32,10 @@ type Config struct {
 	Font_size               int
 	Font_name               string
 	Margin_size             int
-	Cv_order                []string
+	Section_order           []string
 	Project_header_order    []string
 	Experience_header_order []string
 	Education_header_order  []string
-	Section_titles          []string
 }
 
 type CV struct {
@@ -39,4 +45,5 @@ type CV struct {
 	Education  []Education
 	Project    []Project
 	Skills     map[string]string
+	Section    map[string][]SectionEntery // all sections can live here
 }

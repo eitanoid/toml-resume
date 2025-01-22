@@ -1,17 +1,3 @@
-# Description
-A generate easy to write `latex` typset resumes using a `toml` configuration file, parser is written in `Go`. 
-The resume template is taken from [This Repo](https://github.com/jakegut/resume/), being minorly changed to allow for any font use.
-
-# Usage Guide
-
-Cofigure the `.toml` file as desired, then run the parser, resulting in a `.tex` file.
-To compile the `.tex` file, ensure LaTeX is installed, the chosen font is installed as part of your system and compile using `XeLaTeX` or `LuaLaTeX`.
-
-## TOML guide:
-
-
-The format and settings of the output structure can be configured:
-```toml
 [config]
 font_size=10 # 10, 11, 12 as per latex's document class sizes
 font_scale=1 # multiplicative font scaling
@@ -25,11 +11,7 @@ section_order=["Technical Skills","Education","Work Experience","Projects"]
 education_header_order=["institution", "dates", "title", "location"]
 experience_header_order=["institution","dates","title","location"]
 project_header_order=["title, dates"]
-```
 
-As part of the `.toml` file, the resume structure is as follows:
-
-```toml
 [header]
 #settings you can play around with:
 header_format=["email", "linkedin","github", "phone"]
@@ -101,8 +83,4 @@ bulletpoints=[
 [[section."Technical Skills"]] # this section is composed of bulletpoints only. Any other entries will be ignored when Points are present.
 Points."These points"="Are stored as key-value pairs."
 Points."This test is bold"="this text isn't."
-```
 
-# To do list:
-- Parse font, font size etc into the preamble document.
-- 

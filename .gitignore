@@ -1,2 +1,5 @@
+Old.go
 /tex
 cv.tex
+*.toml
+!example.toml
