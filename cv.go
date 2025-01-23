@@ -30,8 +30,9 @@ type Project struct {
 
 type Config struct {
 	Font_size               int
-	Font_name               string
-	Margin_size             int
+	Font_scale              float64
+	Page_margin             float64
+	Font                    string
 	Section_order           []string
 	Project_header_order    []string
 	Experience_header_order []string

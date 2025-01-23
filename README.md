@@ -23,8 +23,35 @@ To compile the `.tex` file, ensure LaTeX is installed, the chosen font is instal
 
 - Compile the resulting `.tex` file using `xelatex` or `lualatex` for examole using latexmk: `latexmk -xelatex out.tex`
 
-## TOML guide:
+<details>
+  <summary>Compiling the output file with Overleaf</summary>
+    
+### Guide:
+1. After running the toml interpreter, create a new Overleaf project and upload `preamble.tex` and your `output.tex` file.
+2. Upload your desired font files into the Overleaf document (eg. calibri-xyz.tff).
+3. Inside the `preamble.tex` document, changed the line:
+```tex
+\setmainfont[
+	...
+]{Calibri} % Where Calibri can be any system font name.
+```
+To
+```tex
+\setmainfont[
+    ...
+    BoldFont=calibri-bold.ttf,
+    ItalicFont=calibri-italic.ttf,
+    BoldItalicFont=calibri-bold-italic.ttf]{calibri-regular.ttf}
+```
+that is, a path to your font files on the Overleaf project, and what to use for each text style.
 
+4. In the settings menu, change the rendering engine from 'PDFLaTeX' to 'XeLaTeX' or 'LuaLaTeX'.
+
+5. Compile the document to get an output pdf.
+
+</details>
+
+## TOML guide:
 
 The format and settings of the output structure can be configured:
 ```toml

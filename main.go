@@ -14,6 +14,7 @@ import (
 //TODO: Decide how to do latex mathmode and special chars.
 
 var ( //TODO: redo the template Im using, keep these for now because they are convenient
+	settingsfile              = "preamble.tex"
 	section                   = "\\section"
 	subheading                = "\\resumeSubheading"
 	resumeItem                = "\\resumeItem"
@@ -45,7 +46,8 @@ func main() {
 	cv_args := ReadTOML(input)
 	cv_builder := strings.Builder{}
 
-	cv_builder.WriteString("\\input{preamble.tex}\n")
+	cv_args.ValidateConfig()
+	WriteDocSettings(&cv_args, &cv_builder)
 	cv_builder.WriteString("\\begin{document}\n")
 
 	WriteHeader(&cv_args, &cv_builder)
@@ -70,21 +72,48 @@ func main() {
 	}
 }
 
-func ValidateConfig(cv_args *CV) {
+func WriteDocSettings(cv_args *CV, cv_builder *strings.Builder) {
+	cv_builder.WriteString(fmt.Sprintf("\\documentclass[%dpt, a4paper]{article}\n", cv_args.Config.Font_size))
+	cv_builder.WriteString(fmt.Sprintf("\\input{%s}\n", settingsfile))
+	cv_builder.WriteString(fmt.Sprintf("\\usepackage[margin=%fcm]{geometry}\n", cv_args.Config.Page_margin))
+	cv_builder.WriteString(fmt.Sprintf("\\setmainfont[Scale=%f]{%s}\n", cv_args.Config.Font_scale, cv_args.Config.Font))
+}
+
+func (cv_args *CV) ValidateConfig() {
 
 	var ( // default values
-		// default_font              = "Calibri"
-		// default_font_size         = 12
-		// default_font_scale        = 1.0
-		// default_page_margin		 = 1.5
+		default_font              = "Calibri"
+		default_font_size         = 12
+		default_font_scale        = 1.0
+		default_page_margin       = 1.5
 		default_cv_order          = []string{"header", "skills", "experience", "education", "projects"}
 		default_experience_header = []string{"title", "dates", "institution", "locaiton"}
 		default_education_header  = []string{"title", "dates", "institution", "locaiton"}
 		default_project_header    = []string{"title", "dates"}
 	)
 
-	//NOTE: validate orders
+	//NOTE: validate page settings:
+	if cv_args.Config.Font == "" {
+		fmt.Printf("font not set, defaulting to: %v.\n", default_font)
+		cv_args.Config.Font = default_font
+	}
 
+	if cv_args.Config.Font_size < 10 || cv_args.Config.Font_size > 12 {
+		fmt.Printf("font size not set or invalid, defaulting to: %v.\n", default_font_size)
+		cv_args.Config.Font_size = default_font_size
+	}
+
+	if cv_args.Config.Font_scale <= 0.1 {
+		fmt.Printf("font scale not set or invalid, defaulting to: %v.\n", default_font_scale)
+		cv_args.Config.Font_scale = default_font_scale
+	}
+
+	if cv_args.Config.Page_margin <= 0 {
+		fmt.Printf("page margin not set or invalid, defaulting to: %v.\n", default_page_margin)
+		cv_args.Config.Page_margin = default_page_margin
+	}
+
+	//NOTE: validate orders
 	if len(cv_args.Config.Section_order) == 0 {
 		fmt.Printf("cv_order is not set, defaulting to: %v.\n", default_cv_order)
 		cv_args.Config.Section_order = default_cv_order
@@ -137,7 +166,7 @@ func WriteSection(cv_args *CV, cv_builder *strings.Builder, section_title string
 				WriteExperienceEntry(entry, cv_builder, cv_args.Config.Experience_header_order)
 			}
 		}
-		cv_builder.WriteString(resumeSubHeadingListEnd + "\n\n")
+		cv_builder.WriteString(resumeSubHeadingListEnd + "\n")
 	} else {
 		for _, entry := range cv_args.Section[section_title] {
 			WriteItemList(entry.Points, cv_builder)
@@ -173,7 +202,7 @@ func WriteExperienceEntry(exp SectionEntery, cv_builder *strings.Builder, header
 		for _, item := range exp.Bulletpoints {
 			cv_builder.WriteString(fmt.Sprintf("	%s{%s}\n", resumeItem, item))
 		}
-		cv_builder.WriteString(resumeItemListEnd + "\n\n")
+		cv_builder.WriteString(resumeItemListEnd + "\n")
 	}
 
 }
@@ -196,7 +225,7 @@ func WriteProjectEntry(project SectionEntery, cv_builder *strings.Builder, heade
 		for _, item := range project.Bulletpoints {
 			cv_builder.WriteString(fmt.Sprintf("	%s{%s}\n", resumeItem, item))
 		}
-		cv_builder.WriteString(resumeItemListEnd + "\n\n")
+		cv_builder.WriteString(resumeItemListEnd + "\n")
 	}
 
 }
@@ -228,7 +257,7 @@ func WriteHeader(cv_args *CV, cv_builder *strings.Builder) { //TODO: decide how 
 			cv_builder.WriteString(" $|$ ")
 		}
 	}
-	cv_builder.WriteString("\n\\end{center}\n\n")
+	cv_builder.WriteString("\n\\end{center}\n")
 }
 
 func WriteItemList(items map[string]string, cv_builder *strings.Builder) {
