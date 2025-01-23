@@ -7,15 +7,21 @@ The resume template is taken from [This Repo](https://github.com/jakegut/resume/
 Cofigure the `.toml` file as desired, then run the parser, resulting in a `.tex` file.
 To compile the `.tex` file, ensure LaTeX is installed, the chosen font is installed as part of your system and compile using `XeLaTeX` or `LuaLaTeX`.
 
-Example command to render: `latexmk -xelatex cv.tex`
 
 ![example](https://github.com/eitanoid/toml-resume/blob/main/examples/examplecv.png)
 
 ## Running the program:
 
-Build the Go project by running `Go build`
+- Git clone this repo into a directory.
 
-Run the binary with the flags: `./tomlresume -input="input.toml" -output="output.tex"`
+- Install all external dependancies:
+  `go get github.com/pelletier/go-toml/v2`
+
+- Build the Go project by running `Go build`
+
+- Run the binary with the flags: `./tomlresume -input="input.toml" -output="output.tex"`
+
+- Compile the resulting `.tex` file using `xelatex` or `lualatex` for examole using latexmk: `latexmk -xelatex out.tex`
 
 ## TOML guide:
 
@@ -115,4 +121,4 @@ Points."This test is bold"="this text isn't."
 
 # To do list:
 - Parse font, font size etc into the preamble document.
-- Handle user input 
+- Redo links in header potentially?
