@@ -29,7 +29,7 @@ To compile the `.tex` file, ensure LaTeX is installed, the chosen font is instal
 ### Guide:
 1. After running the toml interpreter, create a new Overleaf project and upload `preamble.tex` and your `output.tex` file.
 2. Upload your desired font files into the Overleaf document (eg. calibri-xyz.tff).
-3. Inside the `preamble.tex` document, changed the line:
+3. Inside the `output.tex` (or whichever name you gave it) document, changed the line:
 ```tex
 \setmainfont[
 	...
@@ -41,9 +41,8 @@ To
     ...
     BoldFont=calibri-bold.ttf,
     ItalicFont=calibri-italic.ttf,
-    BoldItalicFont=calibri-bold-italic.ttf]{calibri-regular.ttf}
+    BoldItalicFont=calibri-bold-italic.ttf]{calibri-regular.ttf} % each being the path to the corresponding font file in the Overleaf project.
 ```
-that is, a path to your font files on the Overleaf project, and what to use for each text style.
 
 4. In the settings menu, change the rendering engine from 'PDFLaTeX' to 'XeLaTeX' or 'LuaLaTeX'.
 
