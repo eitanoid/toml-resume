@@ -7,13 +7,7 @@ import (
 	"strings"
 )
 
-//TODO:
-//output to a file
-// change font settings in toml
-//TODO: redo how I do sections, make sections maps, that way [[section]] is enoguh to add a section
-//TODO: Decide how to do latex mathmode and special chars.
-
-var ( //TODO: redo the template Im using, keep these for now because they are convenient
+var ( //TODO: the template Im using has these macros
 	settingsfile              = "preamble.tex"
 	section                   = "\\section"
 	subheading                = "\\resumeSubheading"
