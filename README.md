@@ -21,8 +21,7 @@ To compile the `.tex` file, ensure LaTeX is installed, the chosen font is instal
 
 - Run the binary with the flags: `./tomlresume -input="input.toml" -output="output.tex"`
 
-- Compile the resulting `.tex` file using `xelatex` or `lualatex` for examole using latexmk: `latexmk -xelatex out.tex`
-
+- Compile the resulting `.tex` file using `xelatex` or `lualatex` for example using latexmk: `latexmk -xelatex out.tex`. Alternatively this step can be done on Overleaf.
 <details>
   <summary>Compiling the output file with Overleaf</summary>
     
