@@ -6,26 +6,11 @@ type Header struct {
 	Name_size                                      int
 }
 
-type Experience struct {
-	Dates, Location, Title, Institution string
-	Bulletpoints                        []string
-}
-
 type SectionEntery struct {
 	Header_style                                     string
 	Dates, Description, Location, Title, Institution string
 	Bulletpoints                                     []string
 	Points                                           map[string]string
-}
-
-type Education struct {
-	Dates, Location, Title, Institution string
-	Bulletpoints                        []string
-}
-
-type Project struct {
-	Title, Dates, Description string
-	Bulletpoints              []string
 }
 
 type Config struct {
@@ -40,11 +25,8 @@ type Config struct {
 }
 
 type CV struct {
-	Config     Config
-	Header     Header
-	Experience []Experience
-	Education  []Education
-	Project    []Project
-	Skills     map[string]string
-	Section    map[string][]SectionEntery // all sections can live here
+	Config  Config
+	Header  Header
+	Skills  map[string]string
+	Section map[string][]SectionEntery // all sections can live here
 }

@@ -17,7 +17,7 @@ To compile the `.tex` file, ensure LaTeX is installed, the chosen font is instal
 - Install all external dependancies:
   `go get github.com/pelletier/go-toml/v2`
 
-- Build the Go project by running `Go build`
+- Build the Go project by running `go build`
 
 - Run the binary with the flags: `./tomlresume -input="input.toml" -output="output.tex"`
 
@@ -143,7 +143,3 @@ bulletpoints=[
 Points."These points"="Are stored as key-value pairs."
 Points."This test is bold"="this text isn't."
 ```
-
-# To do list:
-- Parse font, font size etc into the preamble document.
-- Redo links in header potentially?

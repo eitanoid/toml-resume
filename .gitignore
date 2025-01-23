@@ -1,5 +1,7 @@
 Old.go
 /tex
-cv.tex
+*.tex
 *.toml
 !example.toml
+!preamble.tex
+
