@@ -268,8 +268,8 @@ func WritePointsSection(entry SectionEntry, cv_builder *strings.Builder) {
 	cv_builder.WriteString("\\begin{itemize}[leftmargin=0.15in, label={}]\n")
 	cv_builder.WriteString("\\small{\\item{\n")
 
-	for title, entry := range entry.Points {
-		cv_builder.WriteString(fmt.Sprintf("\\textbf{%s}: %s\\\\ \n", title, entry))
+	for _, entry := range entry.Points {
+		cv_builder.WriteString(fmt.Sprintf("\\textbf{%s}: %s\\\\ \n", entry[0], entry[1]))
 	}
 	cv_builder.WriteString("}}\n")
 	cv_builder.WriteString("\\end{itemize}")

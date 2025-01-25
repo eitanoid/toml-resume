@@ -10,7 +10,7 @@ type SectionEntry struct {
 	Section_type                                     string
 	Dates, Description, Location, Title, Institution string
 	Bulletpoints                                     []string
-	Points                                           map[string]string
+	Points                                           [][2]string
 }
 
 type Config struct {

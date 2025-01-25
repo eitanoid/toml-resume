@@ -141,10 +141,12 @@ bulletpoints=[
 			]
 
 
-[[section."Technical Skills"]] # this section is composed of a key-value paids with each point's 'key' is displayed in bold.
+[[section."Technical Skills"]] # this section is composed of title-description pairs with each point's 'title' being displayed in bold.
 section_type="points" 
-Points."These points"="Are stored as key-value pairs."
-Points."This test is bold"="this text isn't."
+Points=[
+    ["These points","Are stored as key-value pairs."],
+    [ "This test is bold","this text isn't." ],
+]
 
 [[section."Hobbies and Interests"]] # this section is composed of bulletpoints only.
 section_type="list"
