@@ -49,9 +49,10 @@ To
 
 </details>
 
-## TOML guide:
+## Config guide:
 
 The format and settings of the output structure can be configured:
+
 ```toml
 [config]
 font_size=10 # 10, 11, 12 as per latex's document class sizes
@@ -60,7 +61,7 @@ page_margin=1.5 #in centimeters
 font="Calibri" #your system font of choice
 
 # Case sensitive. Specify each section exactly as you defined it. Repeats are allowed.
-section_order=["Technical Skills","Education","Work Experience","Projects"] 
+section_order=["Technical Skills","Education","Work Experience","Projects","Hobbies and Interests"] 
 
 # Format of each entry types's headers, play around with it until you're happy!
 education_header_order=["institution", "dates", "title", "location"]
@@ -87,8 +88,9 @@ email="your\\_email@email.com"
 linkedin="linkedin.com/your-linkedin"
 github="github.com/your-github"
 
+
 [[section."Work Experience"]] # creates the section "Work Experience" and adds an entry into it.
-header_style="experience" #other options are: "Education", "Project". not setting this defaults to "experience".
+section_type="experience" #other options are: "Education", "Project", "List", "Points". Not case sensitive.
 title="Your Job Title"
 institution="Company Name"
 location="Place, Locaiton"
@@ -101,7 +103,7 @@ bulletpoints=[
 
 
 [[section."Work Experience"]] # this is another addition to "Work Experience".
-header_style="experience"
+section_type="experience"
 title="Your Job Title"
 institution="2nd Company Name"
 location="Place, Locaiton"
@@ -113,7 +115,7 @@ bulletpoints=[
 			]
 
 [[section."Education"]] 
-header_style="education" # education entries are identical to experience ones, only differing on the header order config.
+section_type="education" # education entries accept the same values as experience ones, only differing on the header order set in the config section.
 title="Your Degree"
 institution="University of Universities"
 location="Place, Locaiton"
@@ -122,7 +124,7 @@ bulletpoints=[] # bulletpoints can be empty.
 
 
 [[section."Projects"]] 
-header_style="project" # project headers are shorter and only determined by a title and a date.
+section_type="project" # project headers are shorter and only accept by a title and a date.
 title="This is my first project"
 dates="Date - Another Date"
 bulletpoints=[
@@ -130,16 +132,24 @@ bulletpoints=[
 			]
 
 [[section."Projects"]] 
-header_style="project" 
+section_type="project" 
 title="This is my first project"
-description="Tools used in this project" # Inline description or summary.
+description="Tools used in this project" # An inline description or summary may be added.
 dates="Date - Another Date"
 bulletpoints=[
 			"Really cool project, does really cool things.",
 			]
 
 
-[[section."Technical Skills"]] # this section is composed of bulletpoints only. Any other entries will be ignored when Points are present.
+[[section."Technical Skills"]] # this section is composed of a key-value paids with each point's 'key' is displayed in bold.
+section_type="points" 
 Points."These points"="Are stored as key-value pairs."
 Points."This test is bold"="this text isn't."
+
+[[section."Hobbies and Interests"]] # this section is composed of bulletpoints only.
+section_type="list"
+bulletpoints=[
+	"This is a normal list.",
+	"each entry is displayed in a new line."
+]
 ```

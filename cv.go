@@ -6,8 +6,8 @@ type Header struct {
 	Name_size                                      int
 }
 
-type SectionEntery struct {
-	Header_style                                     string
+type SectionEntry struct {
+	Section_type                                     string
 	Dates, Description, Location, Title, Institution string
 	Bulletpoints                                     []string
 	Points                                           map[string]string
@@ -28,5 +28,5 @@ type CV struct {
 	Config  Config
 	Header  Header
 	Skills  map[string]string
-	Section map[string][]SectionEntery // all sections can live here
+	Section map[string][]SectionEntry // all sections can live here
 }
