@@ -143,7 +143,7 @@ bulletpoints=[
 
 [[section."Technical Skills"]] # this section is composed of title-description pairs with each point's 'title' being displayed in bold.
 section_type="points" 
-Points=[
+points=[
     ["These points","Are stored as key-value pairs."],
     [ "This test is bold","this text isn't." ],
 ]
