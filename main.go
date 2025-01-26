@@ -44,29 +44,28 @@ func ReadTOML(path string) CV {
 func main() {
 	input, output := ParseInput()
 	cv_args := ReadTOML(input)
-	cv_builder := strings.Builder{}
 
 	cv_args.ValidateConfig()
-	WriteDocSettings(&cv_args, &cv_builder)
+	WriteDocSettings(&cv_args, &cv_args.CV_Builder)
 
-	cv_builder.WriteString("\\begin{document}\n")
+	cv_args.WriteString("\\begin{document}\n")
 
-	WriteHeader(&cv_args, &cv_builder)
+	WriteHeader(&cv_args, &cv_args.CV_Builder)
 	for _, section := range cv_args.Config.Section_order {
-		WriteSection(&cv_args, &cv_builder, section)
+		cv_args.WriteSection(section)
 	}
 
-	cv_builder.WriteString("\\end{document}")
+	cv_args.WriteString("\\end{document}")
 
 	if output == "" {
-		fmt.Println(cv_builder.String())
+		fmt.Println(cv_args.String())
 	} else {
 		f, err := os.Create(output)
 		if err != nil {
 			panic(err)
 		}
 		defer f.Close()
-		_, err = f.WriteString(cv_builder.String())
+		_, err = f.WriteString(cv_args.String())
 		if err != nil {
 			panic(err)
 		}
@@ -154,29 +153,29 @@ func WriteBulletpoints(entry SectionEntry, cv_builder *strings.Builder) {
 	}
 }
 
-func WriteSection(cv_args *CV, cv_builder *strings.Builder, section_title string) {
+func (cv *CV) WriteSection(section_title string) {
 
 	//NOTE: Validate Input
-	if len(cv_args.Section[section_title]) == 0 {
+	if len(cv.Section[section_title]) == 0 {
 		return
 	}
 
-	cv_builder.WriteString(fmt.Sprintf("\\section{%s}\n", section_title))
+	cv.WriteString(fmt.Sprintf("\\section{%s}\n", section_title))
 
 	subheading_count := 0
 	section_builder := strings.Builder{}
 
-	for _, entry := range cv_args.Section[section_title] { // write section
+	for _, entry := range cv.Section[section_title] { // write section
 		switch section_type := strings.ToLower(entry.Section_type); section_type {
 
 		case "project":
-			WriteProjectEntry(entry, &section_builder, cv_args.Config.Project_header_order)
+			WriteProjectEntry(entry, &section_builder, cv.Config.Project_header_order)
 			subheading_count++
 		case "education":
-			WriteExperienceEntry(entry, &section_builder, cv_args.Config.Education_header_order)
+			WriteExperienceEntry(entry, &section_builder, cv.Config.Education_header_order)
 			subheading_count++
 		case "experience":
-			WriteExperienceEntry(entry, &section_builder, cv_args.Config.Experience_header_order)
+			WriteExperienceEntry(entry, &section_builder, cv.Config.Experience_header_order)
 			subheading_count++
 		case "list": // these 2 do not have headings
 			WriteListSection(entry, &section_builder)
@@ -188,37 +187,37 @@ func WriteSection(cv_args *CV, cv_builder *strings.Builder, section_title string
 	}
 
 	if subheading_count != 0 { // verify no empty environments in LaTeX, causing an error
-		cv_builder.WriteString(resumeSubHeadingListStart + "\n")
-		cv_builder.WriteString(section_builder.String())
-		cv_builder.WriteString(resumeSubHeadingListEnd + "\n")
+		cv.WriteString(resumeSubHeadingListStart + "\n")
+		cv.WriteString(section_builder.String())
+		cv.WriteString(resumeSubHeadingListEnd + "\n")
 	} else {
-		cv_builder.WriteString(section_builder.String())
+		cv.WriteString(section_builder.String())
 	}
 }
 
-func WriteExperienceEntry(exp SectionEntry, cv_builder *strings.Builder, header_format []string) {
+func WriteExperienceEntry(exp SectionEntry, string_builder *strings.Builder, header_format []string) {
 
 	// process subheading, parse order:
-	cv_builder.WriteString(resumeSubheading)
+	string_builder.WriteString(resumeSubheading)
 	for _, entry := range header_format { // only accept the first 4 inputs
-		cv_builder.WriteString("{")
+		string_builder.WriteString("{")
 		switch strings.ToLower(entry) {
 		case "title":
-			cv_builder.WriteString(exp.Title)
+			string_builder.WriteString(exp.Title)
 		case "dates":
-			cv_builder.WriteString(exp.Dates)
+			string_builder.WriteString(exp.Dates)
 		case "institution":
-			cv_builder.WriteString(exp.Institution)
+			string_builder.WriteString(exp.Institution)
 		case "location":
-			cv_builder.WriteString(exp.Location)
+			string_builder.WriteString(exp.Location)
 		}
-		cv_builder.WriteString("}")
+		string_builder.WriteString("}")
 	}
-	cv_builder.WriteString("\n")
-	WriteBulletpoints(exp, cv_builder)
+	string_builder.WriteString("\n")
+	WriteBulletpoints(exp, string_builder)
 }
 
-func WriteProjectEntry(project SectionEntry, cv_builder *strings.Builder, header_format []string) {
+func WriteProjectEntry(project SectionEntry, string_builder *strings.Builder, header_format []string) {
 
 	//NOTE: validate input:
 	if len(project.Title) == 0 {
@@ -226,80 +225,80 @@ func WriteProjectEntry(project SectionEntry, cv_builder *strings.Builder, header
 	}
 
 	if project.Description != "" {
-		cv_builder.WriteString(fmt.Sprintf("%s{\\textbf{%s} $|$ \\textit{%s}}{%s}\n", resumeProjectHeading, project.Title, project.Description, project.Dates))
+		string_builder.WriteString(fmt.Sprintf("%s{\\textbf{%s} $|$ \\textit{%s}}{%s}\n", resumeProjectHeading, project.Title, project.Description, project.Dates))
 	} else { // add "| <desc>" or don't if empty.
-		cv_builder.WriteString(fmt.Sprintf("%s{\\textbf{%s}}{%s}\n", resumeProjectHeading, project.Title, project.Dates))
+		string_builder.WriteString(fmt.Sprintf("%s{\\textbf{%s}}{%s}\n", resumeProjectHeading, project.Title, project.Dates))
 	}
 
-	WriteBulletpoints(project, cv_builder)
+	WriteBulletpoints(project, string_builder)
 }
 
-func WriteHeader(cv_args *CV, cv_builder *strings.Builder) { //TODO: decide how I want to do this, want to be able to align to any direction in toml
-	cv_builder.WriteString("\\begin{center}\n")
+func WriteHeader(cv *CV, string_builder *strings.Builder) { //TODO: decide how I want to do this, want to be able to align to any direction in toml
+	string_builder.WriteString("\\begin{center}\n")
 
-	cv_builder.WriteString(fmt.Sprintf("\\fontsize{%dpt}{12pt}\\selectfont \\textbf{%s}\\\\ \\vspace{1pt}\n", cv_args.Header.Name_size, cv_args.Header.Name))
-	cv_builder.WriteString("\\small")
+	string_builder.WriteString(fmt.Sprintf("\\fontsize{%dpt}{12pt}\\selectfont \\textbf{%s}\\\\ \\vspace{1pt}\n", cv.Header.Name_size, cv.Header.Name))
+	string_builder.WriteString("\\small")
 
-	for i, entry := range cv_args.Header.Header_format {
+	for i, entry := range cv.Header.Header_format {
 
 		switch entry {
 
 		case "email":
-			cv_builder.WriteString(fmt.Sprintf("\\href{mailto:%s}{\\underline{%s}}", cv_args.Header.Email, cv_args.Header.Email))
+			string_builder.WriteString(fmt.Sprintf("\\href{mailto:%s}{\\underline{%s}}", cv.Header.Email, cv.Header.Email))
 
 		case "linkedin":
-			cv_builder.WriteString(fmt.Sprintf("\\href{https://%s}{\\underline{%s}}", cv_args.Header.Linkedin, cv_args.Header.Linkedin))
+			string_builder.WriteString(fmt.Sprintf("\\href{https://%s}{\\underline{%s}}", cv.Header.Linkedin, cv.Header.Linkedin))
 
 		case "github":
-			cv_builder.WriteString(fmt.Sprintf("\\href{https://%s}{\\underline{%s}}", cv_args.Header.Github, cv_args.Header.Github))
+			string_builder.WriteString(fmt.Sprintf("\\href{https://%s}{\\underline{%s}}", cv.Header.Github, cv.Header.Github))
 
 		case "phone":
-			cv_builder.WriteString(fmt.Sprintf("%s", cv_args.Header.Phone))
+			string_builder.WriteString(fmt.Sprintf("%s", cv.Header.Phone))
 		}
 
-		if i != len(cv_args.Header.Header_format)-1 { // add seperators while not final entry
-			cv_builder.WriteString(" $|$ ")
+		if i != len(cv.Header.Header_format)-1 { // add seperators while not final entry
+			string_builder.WriteString(" $|$ ")
 		}
 	}
-	cv_builder.WriteString("\n\\end{center}\n")
+	string_builder.WriteString("\n\\end{center}\n")
 }
 
-func WritePointsSection(entry SectionEntry, cv_builder *strings.Builder) {
+func WritePointsSection(entry SectionEntry, string_builder *strings.Builder) {
 
 	//NOTE: validate input
 	if len(entry.Points) == 0 {
 		return
 	}
 
-	cv_builder.WriteString("\\begin{itemize}[leftmargin=0.15in, label={}]\n")
-	cv_builder.WriteString("\\small{\\item{\n")
+	string_builder.WriteString("\\begin{itemize}[leftmargin=0.15in, label={}]\n")
+	string_builder.WriteString("\\small{\\item{\n")
 
 	for _, entry := range entry.Points {
-		cv_builder.WriteString(fmt.Sprintf("\\textbf{%s}: %s\\\\ \n", entry[0], entry[1]))
+		string_builder.WriteString(fmt.Sprintf("\\textbf{%s}: %s\\\\ \n", entry[0], entry[1]))
 	}
-	cv_builder.WriteString("}}\n")
-	cv_builder.WriteString("\\end{itemize}")
-	cv_builder.WriteString(large_section_seperator)
+	string_builder.WriteString("}}\n")
+	string_builder.WriteString("\\end{itemize}")
+	string_builder.WriteString(large_section_seperator)
 
 }
 
-func WriteListSection(entry SectionEntry, cv_builder *strings.Builder) {
+func WriteListSection(entry SectionEntry, string_builder *strings.Builder) {
 	//NOTE: validate input
 	if len(entry.Bulletpoints) == 0 {
 		return
 	}
 
-	cv_builder.WriteString("\\begin{itemize}[leftmargin=0.15in, itemsep=-2pt]\n")
-	cv_builder.WriteString("\\small{\n")
+	string_builder.WriteString("\\begin{itemize}[leftmargin=0.15in, itemsep=-2pt]\n")
+	string_builder.WriteString("\\small{\n")
 
 	for _, item := range entry.Bulletpoints {
-		cv_builder.WriteString("\\item{")
-		cv_builder.WriteString(item)
-		cv_builder.WriteString("}\n")
+		string_builder.WriteString("\\item{")
+		string_builder.WriteString(item)
+		string_builder.WriteString("}\n")
 	}
 
-	cv_builder.WriteString("}\n")
-	cv_builder.WriteString("\\end{itemize}")
-	cv_builder.WriteString(large_section_seperator)
+	string_builder.WriteString("}\n")
+	string_builder.WriteString("\\end{itemize}")
+	string_builder.WriteString(large_section_seperator)
 
 }
