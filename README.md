@@ -1,32 +1,34 @@
 # Description
-A generate easy to write `latex` typset resumes using a `toml` configuration file, parser is written in `Go`. 
-The resume template is taken from [This Repo](https://github.com/jakegut/resume/), being minorly changed to allow for any font use.
+Easily generate a `LaTeX` typset resumes using a `toml` configuration file. The intepreter is written in `Go`. 
+
+The resume template is taken from [This Repo](https://github.com/jakegut/resume/), being minorly altered to allow for any font use.
+
+![example](https://github.com/eitanoid/toml-resume/blob/main/examples/examplecv.png)
 
 # Usage Guide
 
 Cofigure the `.toml` file as desired, then run the parser, resulting in a `.tex` file.
-To compile the `.tex` file, ensure LaTeX is installed, the chosen font is installed as part of your system and compile using `XeLaTeX` or `LuaLaTeX`.
-
-
-![example](https://github.com/eitanoid/toml-resume/blob/main/examples/examplecv.png)
+Compile `.tex` file using either `XeLaTeX` or `LuaLaTeX` engines, ensuring LaTeX is installed and the chosen font is installed and accessible.
 
 ## Running the program:
 
 - Git clone this repo into a directory.
 
-- Install all external dependancies:
-  `go get github.com/pelletier/go-toml/v2`
+- Install all external dependancies: `go get github.com/pelletier/go-toml/v2`
 
 - Build the Go project by running `go build`
 
-- Run the binary with the flags: `./tomlresume -input="input.toml" -output="output.tex"`
+- Run the binary with the flags: `./toml-resume -input="input.toml" -output="output.tex"`
 
-- Compile the resulting `.tex` file using `xelatex` or `lualatex` for example using latexmk: `latexmk -xelatex out.tex`. Alternatively this step can be done on Overleaf.
+- Compile the resulting `.tex` file using `xelatex` or `lualatex` for example using latexmk: `latexmk -pdf -xelatex output.tex && latexmk -c`.
+Alternatively this step can be done on Overleaf.
+
 <details>
   <summary>Compiling the output file with Overleaf</summary>
     
 ### Guide:
-1. After running the toml interpreter, create a new Overleaf project and upload `preamble.tex` and your `output.tex` file.
+
+1. After running the toml interpreter, create a new Overleaf project and upload `preamble.tex` and your `output.tex` files.
 2. Upload your desired font files into the Overleaf document (eg. calibri-xyz.tff).
 3. Inside the `output.tex` (or whichever name you gave it) document, changed the line:
 ```tex
@@ -155,3 +157,6 @@ bulletpoints=[
 	"each entry is displayed in a new line."
 ]
 ```
+
+## Todo
+- I would like to be able to do the latex compiling step from a docker image.
