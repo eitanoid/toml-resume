@@ -7,18 +7,24 @@ import (
 	"strings"
 )
 
-var ( //TODO: the template Im using has these macros
-	settingsfile              = "preamble.tex"
-	section                   = "\\section"
-	subheading                = "\\resumeSubheading"
-	resumeItem                = "\\resumeItem"
-	resumeSubheading          = "\\resumeSubheading"
-	resumeItemListStart       = "\\resumeItemListStart"
-	resumeItemListEnd         = "\\resumeItemListEnd"
-	resumeSubHeadingListStart = "\\resumeSubHeadingListStart"
-	resumeSubHeadingListEnd   = "\\resumeSubHeadingListEnd"
-	resumeProjectHeading      = "\\resumeProjectHeading"
-	large_section_seperator   = "\n\n\n"
+var ( //these describe how each section is treated. section, projectheading, subheading and resumeitem are marcos defined in preamble.
+	settingsfile = "preamble.tex"
+
+	section              = "\\section"
+	resumeProjectHeading = "\\resumeProjectHeading"
+	resumeSubheading     = "\\resumeSubheading"
+	resumeItem           = "\\resumeItem"
+
+	resumeSubHeadingListStart = "\\begin{itemize}[leftmargin=0.15in, label={}]"
+	resumeSubHeadingListEnd   = "\\end{itemize}"
+
+	resumeItemListStart = "\\begin{itemize}"
+	resumeItemListEnd   = "\\end{itemize}\\vspace{-5pt}"
+
+	resumeListSectionStart = "\\begin{itemize}[leftmargin=0.15in, itemsep=-2pt]"
+	resumeListSectionEnd   = "\\end{itemize}"
+
+	large_section_seperator = "\n\n\n"
 )
 
 func ReadTOML(path string) CV {
