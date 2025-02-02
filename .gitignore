@@ -1,7 +1,10 @@
 Old.go
 /tex
+/personal/
 *.tex
 *.toml
+*.pdf
+!examplecv.pdf
 !example.toml
 !preamble.tex
 
