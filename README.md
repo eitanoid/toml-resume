@@ -26,30 +26,6 @@ Alternatively this step can be done on Overleaf.
 <details>
   <summary>Compiling the output file with Overleaf</summary>
 
-## Run with Docker
-
-- Git clone into a directory.
-
-- Docker build and docker run:
-
-```Bash
-$ docker build -t toml-resume .
-
-$ docker run \
-        -v $(pwd):/data:z \ #copy current directroy
-        -v /usr/share/fonts:/usr/share/fonts/sysfonts:ro,z \ # copy global system fonts
-        -v ~/.local/share/fonts:/usr/share/fonts/userfonts:ro,z \ # copy user system fonts
-        toml-resume eitan_short.toml out.tex  #run the command
-```
-If you desire to use a font, but don't want to install it as a system font, download the font files into a directory and run the docker image as follows: 
-
-```Bash
-$ docker run \
-        -v $(pwd):/data:z \ #copy current directory
-        -v "path/to/font-dir":/usr/share/fonts/yourfonts:ro,z \
-        toml-resume resume.toml out.tex  #run the command
-```
-
 ### Guide:
 
 1. After running the toml interpreter, create a new Overleaf project and upload `preamble.tex` and your `output.tex` files.
@@ -74,6 +50,31 @@ To
 5. Compile the document to get an output pdf.
 
 </details>
+
+## Run with Docker
+
+- Git clone into a directory.
+
+- Docker build and docker run:
+
+```Bash
+$ docker build -t toml-resume .
+
+$ docker run \
+        -v $(pwd):/data:z \ #copy current directroy
+        -v /usr/share/fonts:/usr/share/fonts/sysfonts:ro,z \ # copy global system fonts
+        -v ~/.local/share/fonts:/usr/share/fonts/userfonts:ro,z \ # copy user system fonts
+        toml-resume eitan_short.toml out.tex  #run the command
+```
+If you desire to use a font, but don't want to install it as a system font, download the font files into a directory and run the docker image as follows: 
+
+```Bash
+$ docker run \
+        -v $(pwd):/data:z \ #copy current directory
+        -v "path/to/font-dir":/usr/share/fonts/yourfonts:ro,z \
+        toml-resume resume.toml out.tex  #run the command
+```
+
 
 ## Config guide:
 
