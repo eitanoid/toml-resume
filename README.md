@@ -64,7 +64,7 @@ $ docker run \
         -v $(pwd):/data:z \ #copy current directroy
         -v /usr/share/fonts:/usr/share/fonts/sysfonts:ro,z \ # copy global system fonts
         -v ~/.local/share/fonts:/usr/share/fonts/userfonts:ro,z \ # copy user system fonts
-        toml-resume eitan_short.toml out.tex  #run the command
+        toml-resume eitan_short.toml out.tex  #run the command, resume.toml is your resume file.
 ```
 If you desire to use a font, but don't want to install it as a system font, download the font files into a directory and run the docker image as follows: 
 
@@ -72,9 +72,12 @@ If you desire to use a font, but don't want to install it as a system font, down
 $ docker run \
         -v $(pwd):/data:z \ #copy current directory
         -v "path/to/font-dir":/usr/share/fonts/yourfonts:ro,z \
-        toml-resume resume.toml out.tex  #run the command
+        toml-resume resume.toml out.tex  
 ```
 
+### Note:
+
+You can `docker run` in any directory, provided `preamble.tex` is in the directory (as it is the style file of the resume and may change) 
 
 ## Config guide:
 
