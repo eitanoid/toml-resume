@@ -239,24 +239,16 @@ func WriteHeader(cv *CV, string_builder *strings.Builder) { //TODO: decide how I
 	string_builder.WriteString(fmt.Sprintf("\\fontsize{%dpt}{12pt}\\selectfont \\textbf{%s}\\\\ \\vspace{1pt}\n", cv.Header.Name_size, cv.Header.Name))
 	string_builder.WriteString("\\small")
 
-	for i, entry := range cv.Header.Header_format {
+	for i, link_entry := range cv.Header.Details {
 
-		switch entry {
-
-		case "email":
-			string_builder.WriteString(fmt.Sprintf("\\href{mailto:%s}{\\underline{%s}}", cv.Header.Email, cv.Header.Email))
-
-		case "linkedin":
-			string_builder.WriteString(fmt.Sprintf("\\href{https://%s}{\\underline{%s}}", cv.Header.Linkedin, cv.Header.Linkedin))
-
-		case "github":
-			string_builder.WriteString(fmt.Sprintf("\\href{https://%s}{\\underline{%s}}", cv.Header.Github, cv.Header.Github))
-
-		case "phone":
-			string_builder.WriteString(fmt.Sprintf("%s", cv.Header.Phone))
+		switch {
+		case len(link_entry) >= 2:
+			string_builder.WriteString(fmt.Sprintf("\\href{%s}{\\underline{%s}}", link_entry[1], link_entry[0]))
+		case len(link_entry) == 1:
+			string_builder.WriteString(fmt.Sprintf("\\underline{%s}", link_entry[0]))
 		}
 
-		if i != len(cv.Header.Header_format)-1 { // add seperators while not final entry
+		if i != len(cv.Header.Details)-1 { // add seperators while not final entry
 			string_builder.WriteString(" $|$ ")
 		}
 	}

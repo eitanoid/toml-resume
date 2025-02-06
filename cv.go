@@ -3,9 +3,9 @@ package main
 import "strings"
 
 type Header struct {
-	Header_format                                  []string
-	Name, Email, Location, Phone, Linkedin, Github string
-	Name_size                                      int
+	Details   [][]string
+	Name      string
+	Name_size int
 }
 
 type SectionEntry struct {

@@ -14,19 +14,20 @@ project_header_order=["title, dates"]
 
 [header]
 #settings you can play around with:
-header_format=["email", "linkedin","github", "phone"]
 name_size=14 #font size in pt.
 
 #your personal details:
 name="Your Full Name"
 location="Location, Earth"
-phone="+xxx xxxxx xxxxxx"
-email="your\\_email@email.com" 
+details = [ # 2nd row of the header, usually social media, phone, email etc. 1st entry is display text, 2nd is a hyperlink. If only one is present will add text only.
+    ["your\\_email@gmail.com", "mailto:your\\_email@gmail.com"], # ref to email
+    ["linkedin.com/l/your-linkedin", "https://linkedin.com/your-linkedin" ], # link to a site
+    ["github.com/your-github", "https://github.com/your-github" ], # link to a site
+    ["+xx xxxx xxxxx"], # text only
+]
 # as the document is interpreted into tex, special characters like '_' '&' '%' in must be escaped by adding a '\' before them.
 # \ beings an escape sequence in the toml specification. To add a '\' into the tex code, we must escape the '\'. That is '\\' interpretes into '\'.
 # and '\\_' interpretes in to '\_' in tex, and to '_' in the final document.
-linkedin="linkedin.com/your-linkedin"
-github="github.com/your-github"
 
 [[section."Work Experience"]] # creates the section "Work Experience" and adds an entry into it.
 section_type="experience" #other options are: "Education", "Project", "List", "Points". Not case sensitive.
