@@ -60,11 +60,14 @@ To
 ```Bash
 $ docker build -t toml-resume .
 
+$ ./makecv.sh resume.toml out.tex
+
+# alternatively the full docker command:
 $ docker run \
         -v $(pwd):/data:z \ #copy current directroy
         -v /usr/share/fonts:/usr/share/fonts/sysfonts:ro,z \ # copy global system fonts
         -v ~/.local/share/fonts:/usr/share/fonts/userfonts:ro,z \ # copy user system fonts
-        toml-resume eitan_short.toml out.tex  #run the command, resume.toml is your resume file.
+        toml-resume resume.toml out.tex  #run the command, resume.toml is your resume file.
 ```
 If you desire to use a font, but don't want to install it as a system font, download the font files into a directory and run the docker image as follows: 
 
