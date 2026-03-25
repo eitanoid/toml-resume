@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/pelletier/go-toml/v2"
 	"os"
 	"strings"
+
+	"github.com/pelletier/go-toml/v2"
 )
 
 var ( //these describe how each section is treated. section, projectheading, subheading and resumeitem are marcos defined in preamble.
@@ -13,6 +14,7 @@ var ( //these describe how each section is treated. section, projectheading, sub
 	section              = "\\section"
 	resumeProjectHeading = "\\resumeProjectHeading"
 	resumeSubheading     = "\\resumeSubheading"
+	resumeSubSubHeading  = "\\resumeSubSubheading"
 	resumeItem           = "\\resumeItem"
 
 	resumeSubHeadingListStart = "\\begin{itemize}[leftmargin=0.15in, label={}]"
@@ -177,6 +179,9 @@ func (cv *CV) WriteSection(section_title string) {
 		case "experience":
 			WriteExperienceEntry(entry, &section_builder, cv.Config.Experience_header_order)
 			subheading_count++
+		case "subexperience":
+			WriteSubExperienceEntry(entry, &section_builder, cv.Config.Experience_header_order)
+			subheading_count++
 		case "list": // these 2 do not have headings
 			WriteListSection(entry, &section_builder)
 		case "points":
@@ -210,6 +215,24 @@ func WriteExperienceEntry(exp SectionEntry, string_builder *strings.Builder, hea
 			string_builder.WriteString(exp.Institution)
 		case "location":
 			string_builder.WriteString(exp.Location)
+		}
+		string_builder.WriteString("}")
+	}
+	string_builder.WriteString("\n")
+	WriteBulletpoints(exp, string_builder)
+}
+
+func WriteSubExperienceEntry(exp SectionEntry, string_builder *strings.Builder, header_format []string) {
+
+	// process subheading, parse order:
+	string_builder.WriteString(resumeSubSubHeading)
+	for _, entry := range header_format { // only accept the first 4 inputs
+		string_builder.WriteString("{")
+		switch strings.ToLower(entry) {
+		case "title":
+			string_builder.WriteString(exp.Title)
+		case "dates":
+			string_builder.WriteString(exp.Dates)
 		}
 		string_builder.WriteString("}")
 	}
