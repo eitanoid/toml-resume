@@ -1,4 +1,4 @@
-FROM golang:1.23 AS build
+FROM golang:1.26 AS build
 
 # set working destination
 WORKDIR /app
