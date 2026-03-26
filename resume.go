@@ -26,7 +26,7 @@ type Config struct {
 	Education_header_order  []string
 }
 
-type CV struct {
+type Resume struct {
 	CV_Builder strings.Builder
 	Config     Config
 	Header     Header
@@ -34,10 +34,10 @@ type CV struct {
 	Section    map[string][]SectionEntry // all sections can live here
 }
 
-func (cv *CV) WriteString(str string) {
+func (cv *Resume) WriteString(str string) {
 	cv.CV_Builder.WriteString(str)
 }
 
-func (cv *CV) String() string {
+func (cv *Resume) String() string {
 	return cv.CV_Builder.String()
 }

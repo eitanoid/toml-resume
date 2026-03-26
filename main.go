@@ -29,8 +29,8 @@ var ( //these describe how each section is treated. section, projectheading, sub
 	large_section_seperator = "\n\n\n"
 )
 
-func ReadTOML(path string) CV {
-	var cv_args = CV{}
+func ReadTOML(path string) Resume {
+	var cv_args = Resume{}
 	fi, err := os.ReadFile(path)
 	if err != nil {
 		panic(err)
@@ -74,14 +74,14 @@ func main() {
 	}
 }
 
-func WriteDocSettings(cv_args *CV, cv_builder *strings.Builder) {
+func WriteDocSettings(cv_args *Resume, cv_builder *strings.Builder) {
 	cv_builder.WriteString(fmt.Sprintf("\\documentclass[%dpt, a4paper]{article}\n", cv_args.Config.Font_size))
 	cv_builder.WriteString(fmt.Sprintf("\\input{%s}\n", settingsfile))
 	cv_builder.WriteString(fmt.Sprintf("\\usepackage[margin=%fcm]{geometry}\n", cv_args.Config.Page_margin))
 	cv_builder.WriteString(fmt.Sprintf("\\setmainfont[Scale=%f]{%s}\n", cv_args.Config.Font_scale, cv_args.Config.Font))
 }
 
-func (cv_args *CV) ValidateConfig() {
+func (cv_args *Resume) ValidateConfig() {
 
 	var ( // default values
 		default_font              = "Calibri"
@@ -155,7 +155,7 @@ func WriteBulletpoints(entry SectionEntry, cv_builder *strings.Builder) {
 	}
 }
 
-func (cv *CV) WriteSection(section_title string) {
+func (cv *Resume) WriteSection(section_title string) {
 
 	//NOTE: Validate Input
 	if len(cv.Section[section_title]) == 0 {
@@ -256,7 +256,7 @@ func WriteProjectEntry(project SectionEntry, string_builder *strings.Builder, he
 	WriteBulletpoints(project, string_builder)
 }
 
-func WriteHeader(cv *CV, string_builder *strings.Builder) { //TODO: decide how I want to do this, want to be able to align to any direction in toml
+func WriteHeader(cv *Resume, string_builder *strings.Builder) { //TODO: decide how I want to do this, want to be able to align to any direction in toml
 	string_builder.WriteString("\\begin{center}\n")
 
 	string_builder.WriteString(fmt.Sprintf("\\fontsize{%dpt}{12pt}\\selectfont \\textbf{%s}\\\\ \\vspace{1pt}\n", cv.Header.Name_size, cv.Header.Name))
