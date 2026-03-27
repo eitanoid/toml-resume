@@ -7,10 +7,24 @@ type Resume struct {
 	Data    *RawData
 }
 
-func NewResume() *Resume {
+func NewDefaultResume() *Resume {
+
+	defaultConfig := Config{
+		FontSize:               12,
+		FontScale:              1,
+		PageMargin:             1.5,
+		FontName:               "Calibri",
+		SectionOrder:           []string{"header", "skills", "experience", "education", "projects"},
+		ProjectHeadersOrder:    []string{"title", "dates"},
+		ExperienceHeadersOrder: []string{"title", "dates", "institution", "locaiton"},
+		EducationHeadersOrder:  []string{"title", "dates", "institution", "locaiton"},
+	}
+
 	return &Resume{
 		Builder: strings.Builder{},
-		Data:    &RawData{},
+		Data: &RawData{
+			Config: defaultConfig,
+		},
 	}
 }
 

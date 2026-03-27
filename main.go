@@ -4,12 +4,14 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/pelletier/go-toml/v2"
 )
 
-var ( //these describe how each section is treated. section, projectheading, subheading and resumeitem are marcos defined in preamble.
+// mapping for latex macros or formatting
+const (
 	settingsfile = "preamble.tex"
 
 	section              = "\\section"
@@ -34,12 +36,12 @@ var (
 	ErrNoInput = errors.New("missing path to input file")
 )
 
-func getDataFromFile(res *Resume, path string) error {
+func (r *Resume) loadDataFromFile(path string) error {
 	fi, err := os.ReadFile(path)
 	if err != nil {
 		return fmt.Errorf("Failed to open file: %w", err)
 	}
-	err = toml.Unmarshal(fi, res.Data)
+	err = toml.Unmarshal(fi, r.Data)
 	if err != nil {
 		return fmt.Errorf("Failed to unmarshal toml file: %w", err)
 	}
@@ -58,41 +60,44 @@ func main() {
 		fmt.Fprint(os.Stderr, ErrNoInput)
 		os.Exit(1)
 	}
-	if i := strings.LastIndex(".", inputPath); i >= 0 {
-		outputPath = inputPath[:i] + "tex"
-	}
 
-	resume := NewResume()
-	err := getDataFromFile(resume, inputPath)
-	if err != nil {
+	outputPath = strings.TrimSuffix(inputPath, filepath.Ext(inputPath)) + ".tex"
+
+	resume := NewDefaultResume()
+	if err := resume.loadDataFromFile(inputPath); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to load data from specified file: %v", err)
 	}
-
-	resume.ValidateConfig()
-	resume.WriteDocSettings()
-
-	resume.WriteString("\\begin{document}\n")
-
-	resume.WriteHeader()
-	for _, section := range resume.Data.Config.SectionOrder {
-		resume.WriteSection(section)
+	if err := resume.ValidateConfig(); err != nil {
+		fmt.Fprintf(os.Stderr, "invalid configuration: %v", err)
 	}
 
-	resume.WriteString("\\end{document}")
+	resume.CreateLatexDoc()
 
-	if outputPath == "" {
-		fmt.Println(resume.String())
-	} else {
+	if outputPath != "" {
 		f, err := os.Create(outputPath)
 		if err != nil {
-			panic(err)
+			fmt.Fprintf(os.Stderr, "failed to create output file \"%s\": %v", outputPath, err)
+			os.Exit(1)
 		}
 		defer f.Close()
-		_, err = f.WriteString(resume.String())
-		if err != nil {
-			panic(err)
+		if _, err := f.WriteString(resume.String()); err != nil {
+			fmt.Fprintf(os.Stderr, "failed to write to output file \"%s\": %v", outputPath, err)
+			os.Exit(1)
 		}
+	} else {
+		fmt.Println(resume.String())
 	}
+
+}
+
+func (r *Resume) CreateLatexDoc() {
+	r.WriteDocSettings()
+	r.WriteString("\\begin{document}\n")
+	r.WriteHeader()
+	for _, section := range r.Data.Config.SectionOrder {
+		r.ProcessSection(section)
+	}
+	r.WriteString("\\end{document}")
 }
 
 func (r *Resume) WriteDocSettings() {
@@ -102,67 +107,40 @@ func (r *Resume) WriteDocSettings() {
 	fmt.Fprintf(&r.Builder, "\\setmainfont[Scale=%f]{%s}\n", r.Data.Config.FontScale, r.Data.Config.FontName)
 }
 
-func (r *Resume) ValidateConfig() {
+func (r *Resume) WriteHeader() {
 
-	var ( // default values
-		default_font              = "Calibri"
-		default_font_size         = 12
-		default_font_scale        = 1.0
-		default_page_margin       = 1.5
-		default_cv_order          = []string{"header", "skills", "experience", "education", "projects"}
-		default_experience_header = []string{"title", "dates", "institution", "locaiton"}
-		default_education_header  = []string{"title", "dates", "institution", "locaiton"}
-		default_project_header    = []string{"title", "dates"}
-	)
+	r.Builder.WriteString("\\begin{center}\n")
+	fmt.Fprintf(&r.Builder, "\\fontsize{%dpt}{12pt}\\selectfont \\textbf{%s}\\\\ \\vspace{1pt}\n", r.Data.Header.NameSize, r.Data.Header.Name)
+	r.Builder.WriteString("\\small")
 
-	//NOTE: validate page settings:
-	if r.Data.Config.FontName == "" {
-		fmt.Printf("font not set, defaulting to: %v.\n", default_font)
-		r.Data.Config.FontName = default_font
+	for i, link_entry := range r.Data.Header.Details {
+
+		switch {
+		case len(link_entry) >= 2:
+			r.Builder.WriteString(fmt.Sprintf("\\href{%s}{\\underline{%s}}", link_entry[1], link_entry[0]))
+		case len(link_entry) == 1:
+			r.Builder.WriteString(fmt.Sprintf("\\underline{%s}", link_entry[0]))
+		}
+
+		if i != len(r.Data.Header.Details)-1 { // add seperators
+			r.Builder.WriteString(" $|$ ")
+		}
 	}
+	r.Builder.WriteString("\n\\end{center}\n")
+}
+
+func (r *Resume) ValidateConfig() error {
 
 	if r.Data.Config.FontSize < 10 || r.Data.Config.FontSize > 12 {
-		fmt.Printf("font size not set or invalid, defaulting to: %v.\n", default_font_size)
-		r.Data.Config.FontSize = default_font_size
+		return errors.New("font size must be between 10 and 12")
 	}
 
-	if r.Data.Config.FontScale <= 0.1 {
-		fmt.Printf("font scale not set or invalid, defaulting to: %v.\n", default_font_scale)
-		r.Data.Config.FontScale = default_font_scale
-	}
+	// pad to handle exceptions
+	r.Data.Config.ExperienceHeadersOrder = append(r.Data.Config.ExperienceHeadersOrder, "", "", "")[:4]
+	r.Data.Config.EducationHeadersOrder = append(r.Data.Config.EducationHeadersOrder, "", "", "")[:4]
+	r.Data.Config.ProjectHeadersOrder = append(r.Data.Config.ProjectHeadersOrder, "")[:2]
 
-	if r.Data.Config.PageMargin <= 0 {
-		fmt.Printf("page margin not set or invalid, defaulting to: %v.\n", default_page_margin)
-		r.Data.Config.PageMargin = default_page_margin
-	}
-
-	//NOTE: validate orders
-	if len(r.Data.Config.SectionOrder) == 0 {
-		fmt.Printf("cv_order is not set, defaulting to: %v.\n", default_cv_order)
-		r.Data.Config.SectionOrder = default_cv_order
-	}
-
-	//NOTE: process headers, default or pad then trim
-	if len(r.Data.Config.ExperienceHeadersOrder) == 0 {
-		fmt.Printf("experience_header_order is not set, defaulting to: %v.\n", default_experience_header)
-		r.Data.Config.ExperienceHeadersOrder = default_experience_header
-	} else {
-		r.Data.Config.ExperienceHeadersOrder = append(r.Data.Config.ExperienceHeadersOrder, "", "", "")[:4] //avoid processing under and over cases
-	}
-
-	if len(r.Data.Config.EducationHeadersOrder) == 0 {
-		fmt.Printf("education_header_order is not set, defaulting to: %v.\n", default_education_header)
-		r.Data.Config.EducationHeadersOrder = default_education_header
-	} else {
-		r.Data.Config.EducationHeadersOrder = append(r.Data.Config.EducationHeadersOrder, "", "", "")[:4] //avoid processing under and over cases
-	}
-
-	if len(r.Data.Config.ProjectHeadersOrder) == 0 {
-		fmt.Printf("project_header_order is not set, defaulting to: %v.\n", default_project_header)
-		r.Data.Config.ProjectHeadersOrder = default_project_header
-	} else {
-		r.Data.Config.ProjectHeadersOrder = append(r.Data.Config.ProjectHeadersOrder, "")[:2] //avoid processing under and over cases
-	}
+	return nil
 
 }
 func (r *Resume) WriteBulletpointsTo(sb *strings.Builder, entry SectionEntry) {
@@ -175,19 +153,18 @@ func (r *Resume) WriteBulletpointsTo(sb *strings.Builder, entry SectionEntry) {
 	}
 }
 
-func (r *Resume) WriteSection(section_title string) {
+func (r *Resume) ProcessSection(title string) {
 
 	//validate input
-	if len(r.Data.Section[section_title]) == 0 {
+	if len(r.Data.Section[title]) == 0 {
 		return
 	}
 
-	r.WriteString(fmt.Sprintf("\\section{%s}\n", section_title))
+	fmt.Fprint(&r.Builder, section, "{", title, "}\n")
 
 	subheading_count := 0
 	section := &strings.Builder{}
-
-	for _, entry := range r.Data.Section[section_title] {
+	for _, entry := range r.Data.Section[title] {
 		switch section_type := strings.ToLower(entry.SectionType); section_type {
 		case "project":
 			r.WriteProjectEntryTo(section, entry, r.Data.Config.ProjectHeadersOrder)
@@ -206,24 +183,22 @@ func (r *Resume) WriteSection(section_title string) {
 		case "points":
 			r.WritePointsSectionTo(section, entry)
 		default: // is default
-			fmt.Printf("section_type '%s' under section '%s' is not a valid option. Try 'project', 'education', 'experience', 'bulletpoints','list'\n", section_type, section_title)
+			fmt.Printf("section_type '%s' under section '%s' is not a valid option. Try 'project', 'education', 'experience', 'bulletpoints','list'\n", section_type, title)
 		}
 	}
 
 	if subheading_count != 0 { // ensure no empty environments in LaTeX
-		r.WriteString(resumeSubHeadingListStart + "\n")
-		r.WriteString(section.String())
-		r.WriteString(resumeSubHeadingListEnd + "\n")
+		fmt.Fprint(&r.Builder, resumeSubHeadingListStart+"\n", section.String(), resumeSubHeadingListEnd+"\n")
 	} else {
 		r.WriteString(section.String())
 	}
 }
 
-func (r *Resume) WriteExperienceEntryTo(sb *strings.Builder, exp SectionEntry, header_format []string) {
+func (r *Resume) WriteExperienceEntryTo(sb *strings.Builder, exp SectionEntry, headerOrder []string) {
 
 	// process subheading, parse order:
 	sb.WriteString(resumeSubheading)
-	for _, entry := range header_format { // only accept the first 4 inputs
+	for _, entry := range headerOrder { // only accept the first 4 inputs
 		sb.WriteString("{")
 		switch strings.ToLower(entry) {
 		case "title":
@@ -241,11 +216,11 @@ func (r *Resume) WriteExperienceEntryTo(sb *strings.Builder, exp SectionEntry, h
 	r.WriteBulletpointsTo(sb, exp)
 }
 
-func (r *Resume) WriteSubExperienceEntryTo(sb *strings.Builder, exp SectionEntry, header_format []string) {
+func (r *Resume) WriteSubExperienceEntryTo(sb *strings.Builder, exp SectionEntry, headerOrder []string) {
 
 	// process subheading, parse order:
 	sb.WriteString(resumeSubSubHeading)
-	for _, entry := range header_format { // only accept the first 4 inputs
+	for _, entry := range headerOrder { // only accept the first 4 inputs
 		sb.WriteString("{")
 		switch strings.ToLower(entry) {
 		case "title":
@@ -275,28 +250,6 @@ func (r *Resume) WriteProjectEntryTo(sb *strings.Builder, project SectionEntry, 
 	r.WriteBulletpointsTo(sb, project)
 }
 
-func (r *Resume) WriteHeader() {
-	r.Builder.WriteString("\\begin{center}\n")
-
-	r.Builder.WriteString(fmt.Sprintf("\\fontsize{%dpt}{12pt}\\selectfont \\textbf{%s}\\\\ \\vspace{1pt}\n", r.Data.Header.NameSize, r.Data.Header.Name))
-	r.Builder.WriteString("\\small")
-
-	for i, link_entry := range r.Data.Header.Details {
-
-		switch {
-		case len(link_entry) >= 2:
-			r.Builder.WriteString(fmt.Sprintf("\\href{%s}{\\underline{%s}}", link_entry[1], link_entry[0]))
-		case len(link_entry) == 1:
-			r.Builder.WriteString(fmt.Sprintf("\\underline{%s}", link_entry[0]))
-		}
-
-		if i != len(r.Data.Header.Details)-1 { // add seperators while not final entry
-			r.Builder.WriteString(" $|$ ")
-		}
-	}
-	r.Builder.WriteString("\n\\end{center}\n")
-}
-
 func (r *Resume) WritePointsSectionTo(sb *strings.Builder, entry SectionEntry) {
 
 	//NOTE: validate input
@@ -304,15 +257,19 @@ func (r *Resume) WritePointsSectionTo(sb *strings.Builder, entry SectionEntry) {
 		return
 	}
 
-	sb.WriteString("\\begin{itemize}[leftmargin=0.15in, label={}]\n")
-	sb.WriteString("\\small{\\item{\n")
+	fmt.Fprint(sb,
+		"\\begin{itemize}[leftmargin=0.15in, label={}]\n",
+		"\\small{\\item{\n",
+	)
 
 	for _, entry := range entry.Points {
 		fmt.Fprintf(sb, "\\textbf{%s}: %s\\\\ \n", entry[0], entry[1])
 	}
-	sb.WriteString("}}\n")
-	sb.WriteString("\\end{itemize}")
-	sb.WriteString(large_section_seperator)
+	fmt.Fprint(sb,
+		"}}\n",
+		"\\end{itemize}",
+		large_section_seperator,
+	)
 
 }
 
@@ -322,17 +279,19 @@ func (r *Resume) WriteListSectionTo(sb *strings.Builder, entry SectionEntry) {
 		return
 	}
 
-	sb.WriteString("\\begin{itemize}[leftmargin=0.15in, itemsep=-2pt]\n")
-	sb.WriteString("\\small{\n")
+	fmt.Fprint(sb,
+		"\\begin{itemize}[leftmargin=0.15in, itemsep=-2pt]\n",
+		"\\small{\n",
+	)
 
 	for _, item := range entry.Bulletpoints {
-		sb.WriteString("\\item{")
-		sb.WriteString(item)
-		sb.WriteString("}\n")
+		fmt.Fprint(sb, "\\item{", item, "}\n")
 	}
 
-	sb.WriteString("}\n")
-	sb.WriteString("\\end{itemize}")
-	sb.WriteString(large_section_seperator)
+	fmt.Fprint(sb,
+		"}\n",
+		"\\end{itemize}",
+		large_section_seperator,
+	)
 
 }
