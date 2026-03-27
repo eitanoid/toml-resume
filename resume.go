@@ -59,7 +59,6 @@ type SectionEntry struct {
 type RawData struct {
 	Config  Config                    `toml:"config"`
 	Header  Header                    `toml:"header"`
-	Skills  map[string]string         // NOTE: what does this to
 	Section map[string][]SectionEntry `toml:"section"`
 }
 
