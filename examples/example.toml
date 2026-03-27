@@ -1,96 +1,99 @@
 [config]
-font_size=11 # 10, 11, 12 as per latex's document class sizes
-font_scale=1 # multiplicative font scaling
-page_margin=1.5 #in centimeters
-font="Calibri" #your system font of choice
+font_size = 11  # 10, 11, 12 as per latex's document class sizes
+font_scale = 1  # multiplicative font scaling
+page_margin = 1.5  # in centimeters
+font = "Calibri"  # your system font of choice
 
 # Case sensitive. Specify each section exactly as you defined it. Repeats are allowed.
-section_order=["Technical Skills","Education","Work Experience","Projects","Hobbies and Interests"] 
+section_order = [
+  "Technical Skills",
+  "Education",
+  "Work Experience",
+  "Projects",
+  "Hobbies and Interests"
+]
 
 # Format of each entry types's headers, play around with it until you're happy!
-education_header_order=["institution", "dates", "title", "location"]
-experience_header_order=["institution","dates","title","location"]
-project_header_order=["title, dates"]
+education_header_order = ["institution", "dates", "title", "location"]
+experience_header_order = ["institution", "dates", "title", "location"]
+project_header_order = ["title, dates"]
 
 [header]
-#settings you can play around with:
-name_size=14 #font size in pt.
+# settings you can play around with:
+name_size = 14  # font size in pt.
 
-#your personal details:
-name="Your Full Name"
-location="Location, Earth"
-details = [ # 2nd row of the header, usually social media, phone, email etc. 1st entry is display text, 2nd is a hyperlink. If only one is present will add text only.
-    ["your\\_email@gmail.com", "mailto:your\\_email@gmail.com"], # ref to email
-    ["linkedin.com/l/your-linkedin", "https://linkedin.com/your-linkedin" ], # link to a site
-    ["github.com/your-github", "https://github.com/your-github" ], # link to a site
-    ["+xx xxxx xxxxx"], # text only
+# your personal details:
+name = "Your Full Name"
+location = "Location, Earth"
+details = [  # 2nd row of the header, usually social media, phone, email etc. 1st entry is display text, 2nd is a hyperlink. If only one is present will add text only.
+  ["your\\_email@gmail.com", "mailto:your\\_email@gmail.com"],  # ref to email
+  ["linkedin.com/l/your-linkedin", "https://linkedin.com/your-linkedin"],  # link to a site
+  ["github.com/your-github", "https://github.com/your-github"],  # link to a site
+  ["+xx xxxx xxxxx"],  # text only
 ]
 # as the document is interpreted into tex, special characters like '_' '&' '%' in must be escaped by adding a '\' before them.
 # \ beings an escape sequence in the toml specification. To add a '\' into the tex code, we must escape the '\'. That is '\\' interpretes into '\'.
 # and '\\_' interpretes in to '\_' in tex, and to '_' in the final document.
 
-[[section."Work Experience"]] # creates the section "Work Experience" and adds an entry into it.
-section_type="experience" #other options are: "Education", "Project", "List", "Points". Not case sensitive.
-title="Your Job Title"
-institution="Company Name"
-location="Place, Locaiton"
-dates="November 2022 - December 2024"
-bulletpoints=[
-			"Accomplishment 1.",
-			"Accomplishment 2.",
-			"Accomplishment 3.",
-			]
-
-
-[[section."Work Experience"]] # this is another addition to "Work Experience".
-section_type="experience"
-title="Your Job Title"
-institution="2nd Company Name"
-location="Place, Locaiton"
-dates="Date - Another Date"
-bulletpoints=[
-			"Accomplishment 1 at 2nd company.",
-			"Accomplishment 2 at 2nd company.",
-			"Accomplishment 3 at 2nd company.",
-			]
-
-[[section."Education"]] 
-section_type="education" # education entries are identical to experience ones, only differing on the header order config.
-title="Your Degree"
-institution="University of Universities"
-location="Place, Locaiton"
-dates="Date - Another Date"
-bulletpoints=[] # bulletpoints can be empty.
-
-
-[[section."Projects"]] 
-section_type="project" # project headers are shorter and only determined by a title and a date.
-title="This is my first project"
-dates="Date - Another Date"
-bulletpoints=[
-			"Really cool project, does really cool things.",
-			]
-
-[[section."Projects"]] 
-section_type="project" 
-title="This is my first project"
-description="Tools used in this project" # Inline description or summary.
-dates="Date - Another Date"
-bulletpoints=[
-			"Really cool project, does really cool things.",
-			]
-
-
-[[section."Technical Skills"]] # this section is composed of title-description pairs with each point's 'title' being displayed in bold.
-section_type="points" 
-points=[
-    ["These points","Are stored as key-value pairs."],
-    [ "This test is bold","this text isn't." ],
+[[section."Work Experience"]]  # creates the section "Work Experience" and adds an entry into it.
+section_type = "experience"  # other options are: "Education", "Project", "List", "Points". Not case sensitive.
+title = "Your Job Title"
+institution = "Company Name"
+location = "Place, Locaiton"
+dates = "November 2022 - December 2024"
+bulletpoints = [
+  "Accomplishment 1.",
+  "Accomplishment 2.",
+  "Accomplishment 3.",
 ]
 
-[[section."Hobbies and Interests"]] # this section is composed of bulletpoints only.
-section_type="list"
-bulletpoints=[
-	"This is a normal list.",
-	"each entry is displayed in a new line."
+[[section."Work Experience"]]  # this is another addition to "Work Experience".
+section_type = "experience"
+title = "Your Job Title"
+institution = "2nd Company Name"
+location = "Place, Locaiton"
+dates = "Date - Another Date"
+bulletpoints = [
+  "Accomplishment 1 at 2nd company.",
+  "Accomplishment 2 at 2nd company.",
+  "Accomplishment 3 at 2nd company.",
+]
+
+[[section."Education"]]
+section_type = "education"  # education entries are identical to experience ones, only differing on the header order config.
+title = "Your Degree"
+institution = "University of Universities"
+location = "Place, Locaiton"
+dates = "Date - Another Date"
+bulletpoints = []  # bulletpoints can be empty.
+
+[[section."Projects"]]
+section_type = "project"  # project headers are shorter and only determined by a title and a date.
+title = "This is my first project"
+dates = "Date - Another Date"
+bulletpoints = [
+  "Really cool project, does really cool things.",
+]
+
+[[section."Projects"]]
+section_type = "project"
+title = "This is my first project"
+description = "Tools used in this project"  # Inline description or summary.
+dates = "Date - Another Date"
+bulletpoints = [
+  "Really cool project, does really cool things.",
+]
+
+[[section."Technical Skills"]]  # this section is composed of title-description pairs with each point's 'title' being displayed in bold.
+section_type = "points"
+points = [
+  ["These points", "Are stored as key-value pairs."],
+  ["This test is bold", "this text isn't."],
+]
+
+[[section."Hobbies and Interests"]]  # this section is composed of bulletpoints only.
+section_type = "list"
+bulletpoints = [
+  "This is a normal list.",
+  "each entry is displayed in a new line."
 ]
