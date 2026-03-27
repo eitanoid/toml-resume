@@ -2,42 +2,57 @@ package main
 
 import "strings"
 
-type Header struct {
-	Details   [][]string
-	Name      string
-	Name_size int
+type Resume struct {
+	Builder strings.Builder
+	Data    *RawData
 }
 
-type SectionEntry struct {
-	Section_type                                     string
-	Dates, Description, Location, Title, Institution string
-	Bulletpoints                                     []string
-	Points                                           [][2]string
+func NewResume() *Resume {
+	return &Resume{
+		Builder: strings.Builder{},
+		Data:    &RawData{},
+	}
 }
 
 type Config struct {
-	Font_size               int
-	Font_scale              float64
-	Page_margin             float64
-	Font                    string
-	Section_order           []string
-	Project_header_order    []string
-	Experience_header_order []string
-	Education_header_order  []string
+	FontSize               int      `toml:"font_size"`
+	FontScale              float64  `toml:"font_scale"`
+	PageMargin             float64  `toml:"page_margin"`
+	FontName               string   `toml:"font"`
+	SectionOrder           []string `toml:"section_order"`
+	ProjectHeadersOrder    []string `toml:"project_header_order"`
+	ExperienceHeadersOrder []string `toml:"experience_header_order"`
+	EducationHeadersOrder  []string `toml:"education_header_order"`
 }
 
-type Resume struct {
-	CV_Builder strings.Builder
-	Config     Config
-	Header     Header
-	Skills     map[string]string
-	Section    map[string][]SectionEntry // all sections can live here
+type Header struct {
+	Details  [][]string `toml:"details"`
+	Name     string     `toml:"name"`
+	NameSize int        `toml:"name_size"`
 }
 
-func (cv *Resume) WriteString(str string) {
-	cv.CV_Builder.WriteString(str)
+type SectionEntry struct {
+	SectionType  string      `toml:"section_type"`
+	Dates        string      `toml:"dates"`
+	Description  string      `toml:"description"`
+	Location     string      `toml:"location"`
+	Title        string      `toml:"title"`
+	Institution  string      `toml:"institution"`
+	Bulletpoints []string    `toml:"bulletpoints"`
+	Points       [][2]string `toml:"points"`
 }
 
-func (cv *Resume) String() string {
-	return cv.CV_Builder.String()
+type RawData struct {
+	Config  Config                    `toml:"config"`
+	Header  Header                    `toml:"header"`
+	Skills  map[string]string         // NOTE: what does this to
+	Section map[string][]SectionEntry `toml:"section"`
+}
+
+func (r *Resume) WriteString(str string) {
+	r.Builder.WriteString(str)
+}
+
+func (r *Resume) String() string {
+	return r.Builder.String()
 }
