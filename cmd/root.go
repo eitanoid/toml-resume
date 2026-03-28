@@ -14,7 +14,8 @@ import (
 
 // flag values
 var (
-	outputFile string
+	outputFile    string
+	overwriteFile bool
 )
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -40,7 +41,8 @@ var rootCmd = &cobra.Command{
 
 			// resolve output file, infer input.tex if not specified
 			if finalOutput == "" {
-				ext := filepath.Ext(inputPath)
+				baseFile := filepath.Base(inputPath)
+				ext := filepath.Ext(baseFile)
 				finalOutput = strings.TrimSuffix(inputPath, ext) + ".tex"
 			}
 
@@ -73,13 +75,14 @@ var rootCmd = &cobra.Command{
 			fmt.Print(resume.String())
 		} else {
 			// write to file
-			err := os.WriteFile(finalOutput, []byte(resume.String()), 0644)
-			if err != nil {
+			if _, err := os.Stat(finalOutput); err == nil && !overwriteFile {
+				return fmt.Errorf("file %s already exists. Use -f to overwrite.", finalOutput)
+			}
+			if err := os.WriteFile(finalOutput, []byte(resume.String()), 0644); err != nil {
 				return fmt.Errorf("failed to write file: %w", err)
 			}
 			fmt.Printf("Successfully generated: %s\n", finalOutput)
 		}
-
 		return nil
 	},
 }
@@ -87,4 +90,5 @@ var rootCmd = &cobra.Command{
 func init() {
 	// Define the output flag. Default is empty string to trigger inference logic.
 	rootCmd.Flags().StringVarP(&outputFile, "output", "o", "", "output path (use '-' for stdout)")
+	rootCmd.Flags().BoolVarP(&overwriteFile, "force", "f", false, "overwrite output file")
 }
