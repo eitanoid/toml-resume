@@ -1,0 +1,86 @@
+config:
+  font_size: 11
+  font_scale: 1
+  page_margin: 1.5
+  font: Calibri
+  section_order:
+    - Technical Skills
+    - Education
+    - Work Experience
+    - Projects
+    - Hobbies and Interests
+  education_header_order:
+    - institution
+    - dates
+    - title
+    - location
+  experience_header_order:
+    - institution
+    - dates
+    - title
+    - location
+  project_header_order:
+    - title, dates
+header:
+  name_size: 14
+  name: Your Full Name
+  location: Location, Earth
+  details:
+    - - your\_email@gmail.com
+      - mailto:your\_email@gmail.com
+    - - linkedin.com/l/your-linkedin
+      - https://linkedin.com/your-linkedin
+    - - github.com/your-github
+      - https://github.com/your-github
+    - - +xx xxxx xxxxx
+section:
+  Work Experience:
+    - section_type: experience
+      title: Your Job Title
+      institution: Company Name
+      location: Place, Locaiton
+      dates: November 2022 - December 2024
+      bulletpoints:
+        - Accomplishment 1.
+        - Accomplishment 2.
+        - Accomplishment 3.
+    - section_type: experience
+      title: Your Job Title
+      institution: 2nd Company Name
+      location: Place, Locaiton
+      dates: Date - Another Date
+      bulletpoints:
+        - Accomplishment 1 at 2nd company.
+        - Accomplishment 2 at 2nd company.
+        - Accomplishment 3 at 2nd company.
+  Education:
+    - section_type: education
+      title: Your Degree
+      institution: University of Universities
+      location: Place, Locaiton
+      dates: Date - Another Date
+      bulletpoints: []
+  Projects:
+    - section_type: project
+      title: This is my first project
+      dates: Date - Another Date
+      bulletpoints:
+        - Really cool project, does really cool things.
+    - section_type: project
+      title: This is my first project
+      description: Tools used in this project
+      dates: Date - Another Date
+      bulletpoints:
+        - Really cool project, does really cool things.
+  Technical Skills:
+    - section_type: points
+      points:
+        - - These points
+          - Are stored as key-value pairs.
+        - - This test is bold
+          - this text isn't.
+  Hobbies and Interests:
+    - section_type: list
+      bulletpoints:
+        - This is a normal list.
+        - each entry is displayed in a new line.
