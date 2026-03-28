@@ -1,6 +1,7 @@
 package resume
 
 import (
+	_ "embed"
 	"errors"
 	"fmt"
 	"strings"
@@ -8,8 +9,6 @@ import (
 
 // mapping for latex macros or formatting
 const (
-	settingsfile = "preamble.tex"
-
 	section              = "\\section"
 	resumeProjectHeading = "\\resumeProjectHeading"
 	resumeSubheading     = "\\resumeSubheading"
@@ -28,6 +27,9 @@ const (
 	large_section_seperator = "\n\n\n"
 )
 
+//go:embed preamble.tex
+var preamble string
+
 func (r *Resume) CreateLatexDoc() {
 	r.writeDocSettings()
 	r.WriteString("\\begin{document}\n")
@@ -40,7 +42,7 @@ func (r *Resume) CreateLatexDoc() {
 
 func (r *Resume) writeDocSettings() {
 	fmt.Fprintf(&r.Builder, "\\documentclass[%dpt, a4paper]{article}\n", r.Data.Config.FontSize)
-	fmt.Fprintf(&r.Builder, "\\input{%s}\n", settingsfile)
+	fmt.Fprintf(&r.Builder, "\n%s\n", preamble)
 	fmt.Fprintf(&r.Builder, "\\usepackage[margin=%fcm]{geometry}\n", r.Data.Config.PageMargin)
 	fmt.Fprintf(&r.Builder, "\\setmainfont[Scale=%f]{%s}\n", r.Data.Config.FontScale, r.Data.Config.FontName)
 }
@@ -114,8 +116,7 @@ func (r *Resume) processSection(title string) {
 			r.writeExperienceEntryTo(section, entry, r.Data.Config.ExperienceHeadersOrder)
 			subheading_count++
 		case "subexperience":
-			r.writeSubExperienceEntryTo(section, entry, r.Data.Config.ExperienceHeadersOrder)
-			subheading_count++
+			r.writeSubExperienceEntryTo(section, entry)
 		case "list": // these 2 do not have headings
 			r.writeListSectionTo(section, entry)
 		case "points":
@@ -154,20 +155,8 @@ func (r *Resume) writeExperienceEntryTo(sb *strings.Builder, exp SectionEntry, h
 	r.WriteBulletpointsTo(sb, exp)
 }
 
-func (r *Resume) writeSubExperienceEntryTo(sb *strings.Builder, exp SectionEntry, headerOrder []string) {
-	// process subheading, parse order:
-	sb.WriteString(resumeSubSubHeading)
-	for _, entry := range headerOrder { // only accept the first 4 inputs
-		sb.WriteString("{")
-		switch strings.ToLower(entry) {
-		case "title":
-			sb.WriteString(exp.Title)
-		case "dates":
-			sb.WriteString(exp.Dates)
-		}
-		sb.WriteString("}")
-	}
-	sb.WriteString("\n")
+func (r *Resume) writeSubExperienceEntryTo(sb *strings.Builder, exp SectionEntry) {
+	fmt.Fprintf(sb, "%s{%s}{%s}\n", resumeSubSubHeading, exp.Title, exp.Dates)
 	r.WriteBulletpointsTo(sb, exp)
 }
 
