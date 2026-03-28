@@ -61,9 +61,9 @@
           # export TEXMFVAR=$(mktemp -d)
           # trap 'rm -rf "$TEXMFVAR"' EXIT
 
-          toml-resume ''${INPUT_PATH} -o out_tmp.tex -f
+          toml-resume "''${INPUT_PATH}" -o out_tmp.tex -f
 
-          latexmk -interaction=nonstopmode -pdf -lualatex out_tmp.tex --jobname=''$BASE_NAME
+          latexmk -interaction=nonstopmode -pdf -lualatex out_tmp.tex --jobname="''$BASE_NAME"
 
           if [[ -f "$BASE_NAME.pdf" ]]; then
             mv "$BASE_NAME.pdf" "$CWD/"
