@@ -59,6 +59,14 @@ bulletpoints = [
   "Accomplishment 3 at 2nd company.",
 ]
 
+[[section."Work Experience"]]
+section_type = "subexperience"
+title = "Subsection Under the Previous One"
+dates = "Date - Another Date"
+bulletpoints = [
+  "Still supports bulletpoints.",
+]
+
 [[section."Education"]]
 section_type = "education"  # education entries are identical to experience ones, only differing on the header order config.
 title = "Your Degree"

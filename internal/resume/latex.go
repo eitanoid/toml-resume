@@ -114,8 +114,7 @@ func (r *Resume) processSection(title string) {
 			r.writeExperienceEntryTo(section, entry, r.Data.Config.ExperienceHeadersOrder)
 			subheading_count++
 		case "subexperience":
-			r.writeSubExperienceEntryTo(section, entry, r.Data.Config.ExperienceHeadersOrder)
-			subheading_count++
+			r.writeSubExperienceEntryTo(section, entry)
 		case "list": // these 2 do not have headings
 			r.writeListSectionTo(section, entry)
 		case "points":
@@ -154,20 +153,8 @@ func (r *Resume) writeExperienceEntryTo(sb *strings.Builder, exp SectionEntry, h
 	r.WriteBulletpointsTo(sb, exp)
 }
 
-func (r *Resume) writeSubExperienceEntryTo(sb *strings.Builder, exp SectionEntry, headerOrder []string) {
-	// process subheading, parse order:
-	sb.WriteString(resumeSubSubHeading)
-	for _, entry := range headerOrder { // only accept the first 4 inputs
-		sb.WriteString("{")
-		switch strings.ToLower(entry) {
-		case "title":
-			sb.WriteString(exp.Title)
-		case "dates":
-			sb.WriteString(exp.Dates)
-		}
-		sb.WriteString("}")
-	}
-	sb.WriteString("\n")
+func (r *Resume) writeSubExperienceEntryTo(sb *strings.Builder, exp SectionEntry) {
+	fmt.Fprintf(sb, "%s{%s}{%s}\n", resumeSubSubHeading, exp.Title, exp.Dates)
 	r.WriteBulletpointsTo(sb, exp)
 }
 
