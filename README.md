@@ -189,3 +189,7 @@ bulletpoints=[
 	"each entry is displayed in a new line."
 ]
 ```
+
+# todo
+
+- read from stdin for pipes
