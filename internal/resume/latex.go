@@ -1,6 +1,7 @@
 package resume
 
 import (
+	_ "embed"
 	"errors"
 	"fmt"
 	"strings"
@@ -8,8 +9,6 @@ import (
 
 // mapping for latex macros or formatting
 const (
-	settingsfile = "preamble.tex"
-
 	section              = "\\section"
 	resumeProjectHeading = "\\resumeProjectHeading"
 	resumeSubheading     = "\\resumeSubheading"
@@ -28,6 +27,9 @@ const (
 	large_section_seperator = "\n\n\n"
 )
 
+//go:embed preamble.tex
+var preamble string
+
 func (r *Resume) CreateLatexDoc() {
 	r.writeDocSettings()
 	r.WriteString("\\begin{document}\n")
@@ -40,7 +42,7 @@ func (r *Resume) CreateLatexDoc() {
 
 func (r *Resume) writeDocSettings() {
 	fmt.Fprintf(&r.Builder, "\\documentclass[%dpt, a4paper]{article}\n", r.Data.Config.FontSize)
-	fmt.Fprintf(&r.Builder, "\\input{%s}\n", settingsfile)
+	fmt.Fprintf(&r.Builder, "\n%s\n", preamble)
 	fmt.Fprintf(&r.Builder, "\\usepackage[margin=%fcm]{geometry}\n", r.Data.Config.PageMargin)
 	fmt.Fprintf(&r.Builder, "\\setmainfont[Scale=%f]{%s}\n", r.Data.Config.FontScale, r.Data.Config.FontName)
 }
