@@ -46,13 +46,14 @@
               echo "input is required"
               exit 1
           fi
-          export TEXMFVAR=$(mktemp -d)
-          trap 'rm -rf "$TEXMFVAR"' EXIT
+          # I'm not sure if these are needed. when I was testing earlier, this fixed a lualatex null-font issue
+          # export TEXMFVAR=$(mktemp -d)
+          # trap 'rm -rf "$TEXMFVAR"' EXIT
 
-          BASENAME=$(basename $1)
-          JOBNAME=''${BASENAME%.*}
-          toml-resume $1 -o out.tex -f | latexmk -interaction=errorstopmode -pdf -lualatex out.tex --jobname=$JOBNAME
-          latexmk -c $JOBNAME.pdf  && rm out.tex
+          # BASENAME=$(basename $1)
+          JOBNAME=''${1%.*}
+          toml-resume ''$1 -o out.tex -f | latexmk -interaction=errorstopmode -pdf -lualatex out.tex --jobname=''$JOBNAME
+          latexmk -c ''$JOBNAME.pdf  && rm out.tex
         '';
       in
       {
