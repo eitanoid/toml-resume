@@ -19,7 +19,7 @@ $ toml-resume example.toml
 # output to stdout
 $ toml-resume example.toml -o -
 
-# read from stdin or redirection (output to by default stdout)
+# read from stdin or redirection (output to stdout by default)
 $ cat file.toml | toml-resume
 $ toml-resume < example.toml
 
@@ -30,7 +30,7 @@ $ toml-resume example.toml -o custompath
 
 ## Run and Compile LaTeX with Nix
 
-create a pdf document from the config file by running:
+Create a pdf document from the config file by running:
 ```bash
 nix develop github:eitanoid/toml-resume --command gen-resume <file>.toml
 ```
