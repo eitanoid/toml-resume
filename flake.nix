@@ -42,18 +42,36 @@
           };
         };
         gen-resume = pkgs.writeShellScriptBin "gen-resume" ''
-          if [ -z $1 ]; then
-              echo "input is required"
-              exit 1
+          set -e
+          if [[ -z "$1" ]] || [[ ! -f "$1" ]]; then
+            echo "Usage: gen-resume <input_file.toml>"
+            exit 1
           fi
+          INPUT_PATH=$(realpath "$1")
+          BASE_NAME=$(basename ''${1%.*})
+          CWD=$(pwd)
+
+          TEMP_DIR=$(mktemp -d)
+
+          trap 'rm -rf "$TEMP_DIR"' EXIT
+
+          cd ''${TEMP_DIR}
+
           # I'm not sure if these are needed. when I was testing earlier, this fixed a lualatex null-font issue
           # export TEXMFVAR=$(mktemp -d)
           # trap 'rm -rf "$TEXMFVAR"' EXIT
 
-          # BASENAME=$(basename $1)
-          JOBNAME=''${1%.*}
-          toml-resume ''$1 -o out.tex -f | latexmk -interaction=errorstopmode -pdf -lualatex out.tex --jobname=''$JOBNAME
-          latexmk -c ''$JOBNAME.pdf  && rm out.tex
+          toml-resume ''${INPUT_PATH} -o out_tmp.tex -f
+
+          latexmk -interaction=nonstopmode -pdf -lualatex out_tmp.tex --jobname=''$BASE_NAME
+
+          if [[ -f "$BASE_NAME.pdf" ]]; then
+            mv "$BASE_NAME.pdf" "$CWD/"
+            echo "Created $BASE_NAME.pdf in $CWD"
+          else
+            echo "Error: failed to generate pdf."
+            exit 1
+          fi
         '';
       in
       {
