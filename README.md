@@ -3,7 +3,7 @@ Easily generate beautiful `LaTeX` typset resumes using a `toml` or `yaml` config
 
 The resume template is taken from [this repo](https://github.com/jakegut/resume/), and updated to use arbitrary fonts.
 
-![example](https://github.com/eitanoid/toml-resume/blob/main/examples/examplecv.png)
+![example](https://github.com/eitanoid/toml-resume/blob/main/examples/example.jpg)
 
 # Usage Guide
 
