@@ -20,7 +20,10 @@
     flake-utils.lib.eachDefaultSystem (
       system:
       let
-        pkgs = import nixpkgs { inherit system; };
+        pkgs = import nixpkgs {
+          inherit system;
+          config.allowUnfree = true;
+        };
         tex = pkgs.texlive.combine {
           inherit (pkgs.texlive)
             latexmk
@@ -31,6 +34,13 @@
             hyperref
             anyfontsize
             ;
+        };
+        myFonts = [
+          pkgs.vista-fonts
+        ];
+        fontsConf = pkgs.makeFontsConf {
+          fontDirectories = myFonts;
+
         };
         toml-resume = pkgs.buildGoModule {
           pname = "toml-resume";
@@ -57,10 +67,6 @@
 
           cd ''${TEMP_DIR}
 
-          # I'm not sure if these are needed. when I was testing earlier, this fixed a lualatex null-font issue
-          # export TEXMFVAR=$(mktemp -d)
-          # trap 'rm -rf "$TEXMFVAR"' EXIT
-
           toml-resume "''${INPUT_PATH}" -o out_tmp.tex -f
 
           latexmk -interaction=nonstopmode -pdf -lualatex out_tmp.tex --jobname="''$BASE_NAME"
@@ -83,7 +89,21 @@
               gen-resume
             ];
           };
-
+          pure = pkgs.mkShellNoCC {
+            packages = [
+              toml-resume
+              tex
+              gen-resume
+              pkgs.fontconfig
+            ];
+            shellHook = ''
+              export FONTCONFIG_FILE="${fontsConf}"
+              export OSFONTDIR="${pkgs.lib.makeSearchPath "share/fonts" myFonts}"
+              # This is needed when running in pure mode sometimes
+              export TEXMFVAR=$(mktemp -d)
+              trap 'rm -rf "$TEXMFVAR"' EXIT
+            '';
+          };
         };
       }
     );
