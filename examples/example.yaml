@@ -1,3 +1,4 @@
+apiVersion: v1
 config:
   font_size: 11
   font_scale: 1
