@@ -98,8 +98,9 @@
           };
       in
       {
-        # expose builder function to --expr
+        # expose builder function in latex shell to --expr
         lib.mkTexShell = mkTexShell;
+
         devShells = {
           default = pkgs.mkShellNoCC {
             packages = [
@@ -107,9 +108,6 @@
               tex
               gen-resume
             ];
-          };
-          pure = mkTexShell {
-            extraFonts = [ pkgs.vista-fonts ];
           };
         };
       }
