@@ -35,13 +35,6 @@
             anyfontsize
             ;
         };
-        myFonts = [
-          pkgs.vista-fonts
-        ];
-        fontsConf = pkgs.makeFontsConf {
-          fontDirectories = myFonts;
-
-        };
         toml-resume = pkgs.buildGoModule {
           pname = "toml-resume";
           version = "latest";
@@ -79,8 +72,34 @@
             exit 1
           fi
         '';
+        mkTexShell =
+          {
+            extraFonts ? [ ],
+          }:
+          let
+            fontsConf = pkgs.makeFontsConf {
+              fontDirectories = extraFonts;
+            };
+          in
+          pkgs.mkShellNoCC {
+            packages = [
+              tex
+              pkgs.fontconfig
+              toml-resume
+              gen-resume
+            ];
+            shellHook = ''
+              export FONTCONFIG_FILE="${fontsConf}"
+              export OSFONTDIR="${pkgs.lib.makeSearchPath "share/fonts" extraFonts}"
+              # This is needed when running in pure mode sometimes
+              export TEXMFVAR=$(mktemp -d)
+              trap 'rm -rf "$TEXMFVAR"' EXIT
+            '';
+          };
       in
       {
+        # expose builder function to --expr
+        lib.mkTexShell = mkTexShell;
         devShells = {
           default = pkgs.mkShellNoCC {
             packages = [
@@ -89,20 +108,8 @@
               gen-resume
             ];
           };
-          pure = pkgs.mkShellNoCC {
-            packages = [
-              toml-resume
-              tex
-              gen-resume
-              pkgs.fontconfig
-            ];
-            shellHook = ''
-              export FONTCONFIG_FILE="${fontsConf}"
-              export OSFONTDIR="${pkgs.lib.makeSearchPath "share/fonts" myFonts}"
-              # This is needed when running in pure mode sometimes
-              export TEXMFVAR=$(mktemp -d)
-              trap 'rm -rf "$TEXMFVAR"' EXIT
-            '';
+          pure = mkTexShell {
+            extraFonts = [ pkgs.vista-fonts ];
           };
         };
       }
