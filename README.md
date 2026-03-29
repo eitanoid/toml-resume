@@ -31,9 +31,28 @@ $ toml-resume example.toml -o custompath
 ## Run and Compile LaTeX with Nix
 
 Create a pdf document from the config file by running:
-```bash
+```nix
+# impure, if your system has your specified font
 nix develop github:eitanoid/toml-resume --command gen-resume <file>.toml
+
+# pure, use flake with bundled dependancies
+nix develop --ignore-environment --impure --expr '
+  let
+    flake = builtins.getFlake github:eitanoid/toml-resume;
+    pkgs = flake.inputs.nixpkgs.legacyPackages.''${builtins.currentSystem};
+  in
+    flake.lib.''${builtins.currentSystem}.mkTexShell {
+      extraFonts = [
+        # nixpkgs package with any font you need
+        pkgs.source-serif
+        pkgs.vista-fonts
+      ];
+    }
+' --command gen-resume <file>.toml
 ```
+
+> [!NOTE]
+> `nix-command` and `flakes` need to be enabled as experimental features either in a config file or with the `--extra-experimental-features` flag.
 
 ## Config guide:
 
