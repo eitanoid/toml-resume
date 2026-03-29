@@ -57,9 +57,10 @@ type SectionEntry struct {
 }
 
 type RawData struct {
-	Config  Config                    `toml:"config" json:"config"`
-	Header  Header                    `toml:"header" json:"header"`
-	Section map[string][]SectionEntry `toml:"section" json:"section"`
+	ApiVersion string                    `toml:"apiVersion" json:"apiVersion"`
+	Config     Config                    `toml:"config" json:"config"`
+	Header     Header                    `toml:"header" json:"header"`
+	Section    map[string][]SectionEntry `toml:"section" json:"section"`
 }
 
 func (r *Resume) WriteString(str string) {

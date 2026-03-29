@@ -30,7 +30,10 @@ const (
 //go:embed preamble.tex
 var preamble string
 
-func (r *Resume) CreateLatexDoc() {
+func (r *Resume) CreateLatexDoc() error {
+	if r.Data.ApiVersion != "v1" {
+		return fmt.Errorf("failed to create latex document with apiVersion %s : %w", r.Data.ApiVersion, errors.New("apiVersion does not match"))
+	}
 	r.writeDocSettings()
 	r.WriteString("\\begin{document}\n")
 	r.writeHeader()
@@ -38,6 +41,7 @@ func (r *Resume) CreateLatexDoc() {
 		r.processSection(section)
 	}
 	r.WriteString("\\end{document}")
+	return nil
 }
 
 func (r *Resume) writeDocSettings() {

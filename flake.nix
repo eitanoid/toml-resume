@@ -20,7 +20,10 @@
     flake-utils.lib.eachDefaultSystem (
       system:
       let
-        pkgs = import nixpkgs { inherit system; };
+        pkgs = import nixpkgs {
+          inherit system;
+          config.allowUnfree = true;
+        };
         tex = pkgs.texlive.combine {
           inherit (pkgs.texlive)
             latexmk
@@ -57,10 +60,6 @@
 
           cd ''${TEMP_DIR}
 
-          # I'm not sure if these are needed. when I was testing earlier, this fixed a lualatex null-font issue
-          # export TEXMFVAR=$(mktemp -d)
-          # trap 'rm -rf "$TEXMFVAR"' EXIT
-
           toml-resume "''${INPUT_PATH}" -o out_tmp.tex -f
 
           latexmk -interaction=nonstopmode -pdf -lualatex out_tmp.tex --jobname="''$BASE_NAME"
@@ -73,8 +72,34 @@
             exit 1
           fi
         '';
+        mkTexShell =
+          {
+            extraFonts ? [ ],
+          }:
+          let
+            fontsConf = pkgs.makeFontsConf {
+              fontDirectories = extraFonts;
+            };
+          in
+          pkgs.mkShellNoCC {
+            packages = [
+              tex
+              pkgs.fontconfig
+              toml-resume
+              gen-resume
+            ];
+            shellHook = ''
+              export FONTCONFIG_FILE="${fontsConf}"
+              export OSFONTDIR="${pkgs.lib.makeSearchPath "share/fonts" extraFonts}"
+              # This is needed when running in pure mode sometimes
+              export TEXMFVAR=$(mktemp -d)
+              trap 'rm -rf "$TEXMFVAR"' EXIT
+            '';
+          };
       in
       {
+        # expose builder function to --expr
+        lib.mkTexShell = mkTexShell;
         devShells = {
           default = pkgs.mkShellNoCC {
             packages = [
@@ -83,7 +108,9 @@
               gen-resume
             ];
           };
-
+          pure = mkTexShell {
+            extraFonts = [ pkgs.vista-fonts ];
+          };
         };
       }
     );
