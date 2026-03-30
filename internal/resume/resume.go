@@ -16,8 +16,8 @@ func NewDefaultResume() *Resume {
 		FontName:               "Calibri",
 		SectionOrder:           []string{"header", "skills", "experience", "education", "projects"},
 		ProjectHeadersOrder:    []string{"title", "dates"},
-		ExperienceHeadersOrder: []string{"title", "dates", "institution", "locaiton"},
-		EducationHeadersOrder:  []string{"title", "dates", "institution", "locaiton"},
+		ExperienceHeadersOrder: []string{"title", "dates", "institution", "location"},
+		EducationHeadersOrder:  []string{"title", "dates", "institution", "location"},
 	}
 
 	return &Resume{
