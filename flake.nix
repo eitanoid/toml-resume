@@ -62,7 +62,7 @@
 
           toml-resume "''${INPUT_PATH}" -o out_tmp.tex -f
 
-          latexmk -interaction=nonstopmode -pdf -lualatex out_tmp.tex --jobname="''$BASE_NAME"
+          latexmk -silent -synctex=0 -interaction=nonstopmode -pdf -lualatex out_tmp.tex --jobname="''$BASE_NAME"
 
           if [[ -f "$BASE_NAME.pdf" ]]; then
             mv "$BASE_NAME.pdf" "$CWD/"
