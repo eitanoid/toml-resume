@@ -68,7 +68,12 @@ var rootCmd = &cobra.Command{
 		if err := loader.LoadFromReader(r, resume.Data); err != nil {
 			return fmt.Errorf("failed to load config data: %w", err)
 		}
-		resume.CreateLatexDoc()
+		if err := resume.ValidateConfig(); err != nil {
+			return fmt.Errorf("failed to validate config data: %w", err)
+		}
+		if err := resume.CreateLatexDoc(); err != nil {
+			return fmt.Errorf("failed to generate LaTeX document: %w", err)
+		}
 
 		if finalOutput == "-" || finalOutput == "" {
 			// write to stdout

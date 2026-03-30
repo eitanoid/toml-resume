@@ -21,7 +21,8 @@ config:
     - title
     - location
   project_header_order:
-    - title, dates
+    - title
+    - dates
 header:
   name_size: 14
   name: Your Full Name

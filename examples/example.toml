@@ -18,7 +18,7 @@ section_order = [
 # Format of each entry types's headers, play around with it until you're happy!
 education_header_order = ["institution", "dates", "title", "location"]
 experience_header_order = ["institution", "dates", "title", "location"]
-project_header_order = ["title, dates"]
+project_header_order = ["title", "dates"]
 
 [header]
 # settings you can play around with:
